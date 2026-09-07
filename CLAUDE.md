@@ -193,9 +193,29 @@ saltare avanti non rifiuto, ma dico **cosa manca e cosa si romperà**, e lascio 
 ### Chiusura del passo
 
 1. **Eseguo** la verifica del criterio e mostro l'**output reale** (regola 1.4).
-2. Se il passo era 🔴 o 🟡, faccio le domande di verifica del briefing.
+2. **Valuto le risposte** alle domande di verifica del briefing — vedi 6.1.
 3. **Spunto la casella** e aggiorno la riga di avanzamento in cima a `SCALETTA.md` (regola 1.3).
-4. Propongo il commit.
+4. Propongo il commit e **attendo conferma** prima di eseguirlo (regola 8.3).
+
+### 6.1 La valutazione delle risposte
+
+L'autore risponde alle domande di verifica scrivendo dentro `docs/passi/<id>.md`. Alla chiusura
+del passo, **nello stesso file**:
+
+- ogni risposta riceve un **voto da 1 a 5 stelle**, assegnato onestamente: la generosità qui non
+  serve a niente, perché lo scopo è distinguere l'aver capito dall'aver fatto funzionare;
+- aggiungo un **commento** dove serve — cosa manca, cosa è imprecisio, cosa va oltre il richiesto;
+- **riorganizzo la sezione perché sia leggibile in preview**: domanda, risposta, voto e commento
+  distinti, non un blocco di testo con dei `R:` in mezzo.
+
+**Le risposte non sono bloccanti.** Un passo si chiude, si committa e si mergia anche con risposte
+mediocri o assenti: la valutazione lascia traccia, non fa da cancello.
+
+**Ogni risposta sotto le tre stelle va annotata in `DEBITO-DI-APPRENDIMENTO.md`**, nella sezione
+dedicata alle domande di verifica, con tre campi: la domanda, la risposta data, la correzione. Le
+correzioni sono **brevi**; se un concetto richiede una spiegazione estesa metto **il link a una
+risorsa** che lo spiega, invece di scriverla lì. Un file di debito che diventa un manuale non viene
+riletto.
 
 ---
 
@@ -231,27 +251,22 @@ La cronologia git è un artefatto di portfolio: viene letta.
   della pull request o nel briefing in `docs/passi/`, non nella cronologia di git
 - Commit **piccoli e frequenti**, uno per unità di lavoro comprensibile
 - Mai commit del tipo `wip`, `fix`, `update`
-- **Non faccio commit né push del codice di implementazione senza che l'autore lo chieda.** Li
-  propongo. **Eccezione: l'impalcatura si committa e si pusha sempre** — vedi 8.3
+- **Non faccio commit né push senza conferma dell'autore, mai.** Li propongo — vedi 8.3
 - Il messaggio è in italiano, i prefissi convenzionali in inglese
 
-### 8.3 L'impalcatura si committa e si pusha sempre
+### 8.3 Commit e push si chiedono sempre
 
-L'**impalcatura** di un passo è tutto ciò che produco per prepararlo, e che per definizione non
-è l'implementazione che l'autore deve scrivere: il briefing `docs/passi/<id>.md`, i marcatori
-`TODO(<passo>/<n>)` con i loro commenti di intestazione, gli scheletri con firme e tipi senza
-logica, il test che fallisce, e le modifiche di processo a questo file e a `SCALETTA.md`.
+**Nessun `git commit` e nessun `git push` va eseguito di iniziativa**, nemmeno sui file di
+documentazione, di processo o di impalcatura. Preparo il lavoro, mostro cosa è cambiato, propongo
+il messaggio di commit, e **attendo conferma**.
 
-**Per l'impalcatura eseguo `git commit` e `git push` direttamente, sul branch di feature del
-passo, senza chiedere.** Il motivo è pratico: l'impalcatura deve stare nella cronologia *prima*
-che l'autore inizi, così il suo lavoro diventa un commit separato e leggibile invece di
-mescolarsi al materiale preparatorio nella stessa diff. E chiedere il permesso ogni volta è un
-giro di conversazione che non decide niente, lasciando intanto l'autore a lavorare su un working
-tree sporco.
+Questa regola ha sostituito una precedente eccezione che autorizzava a committare e pushare
+l'impalcatura senza chiedere. L'eccezione non è più in vigore: se ne trovo traccia altrove nei
+documenti, è un residuo da correggere.
 
-**Il commit del codice di implementazione resta da proporre**, non da eseguire di iniziativa:
-quello va rivisto prima di finire nella cronologia. Vale sia per il codice scritto dall'autore
-sia per quello scritto in sua deroga esplicita.
+Resta valido tutto il resto della sezione 8, in particolare la verifica di
+`git config --get user.email` prima di ogni commit (8.2), dato che la configurazione locale non
+viene clonata.
 
 ### 8.1 Il modello di branch — GitFlow ridotto
 
