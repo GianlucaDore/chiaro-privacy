@@ -1,6 +1,6 @@
 # SCALETTA — Chiaro
 
-**69 passi in 7 fasi, più un backlog.** È la spina dorsale del progetto e la fonte di verità unica
+**71 passi in 7 fasi, più un backlog.** È la spina dorsale del progetto e la fonte di verità unica
 sull'avanzamento: il passo corrente è **il primo non spuntato**.
 
 ## Come si usa
@@ -18,7 +18,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 1 / 69** — ultimo completato: nessuno · corrente: **0.2**
+**Avanzamento: 1 / 71** — ultimo completato: nessuno · corrente: **0.2**
 
 ---
 
@@ -29,6 +29,7 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 
 - [x] **0.1** 🟢 Albero combinato, con i file dei template al posto giusto — *l'albero corrisponde; `app/` esiste come pacchetto; nessuna cartella resta vuota nel clone*
 - [ ] **0.2** 🟢 Git: repo, `.gitignore` unificato (corretta la doppia riga `.vscode/`), primo commit, repo pubblica su GitHub — *`git ls-files` mostra `.vscode/extensions.json` tracciato e nessun `.env`*
+- [ ] **0.2b** 🟢 Identità git personale locale alla repo e **GitFlow ridotto**: branch `develop` creato da `main`, `main` protetto contro i push diretti, il modello documentato in CLAUDE.md §8.1 — *`git config --get user.email` dentro la repo dà l'identità personale e fuori quella di default della macchina; `git branch -r` elenca `origin/main` e `origin/develop`*
 - [ ] **0.3** 🔴 **Correzione del bug `get_project_root()`** — *concetti: `Path.parents`, perché un percorso relativo al file è fragile, come si verifica* — *un test asserisce che `DOTENV` punta dentro la repo e che una variabile scritta nel `.env` arriva nei settings*
 - [ ] **0.4** 🟡 Pipfile: aggiunto `pydantic-settings`, rimossi `pyjwt` e `cryptography`, aggiornati FastAPI e Pydantic, aggiunti pytest/ruff/pyright — *da venv vuoto `pipenv install && pipenv run dev` parte al primo colpo*
 - [ ] **0.5** 🔴 `main.py` ripulito: lifespan invece di `on_event`, CORS da `BACKEND_CORS_ORIGIN`, `logging.basicConfig` una volta sola, **security headers attivati** — *concetti: cos'è il lifespan e perché ha sostituito gli event handler; cosa fa ciascuno dei security header oggi commentati (CSP, `X-Frame-Options`, `nosniff`, le tre policy Cross-Origin) e quali di essi hai già nella nota sull'auth; perché `basicConfig` chiamato due volte è un problema silenzioso* — *`curl -I` mostra CSP, `X-Frame-Options` e `X-Content-Type-Options`; l'app parte e si spegne senza warning di deprecazione*
@@ -39,6 +40,7 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 - [ ] **0.10** 🟢 `.vscode/extensions.json`: SonarQube, ESLint, Python; rimosso `Vue.volar` — *aprendo la cartella, VSCode propone le tre estensioni giuste*
 - [ ] **0.11** 🔴 **I due Dockerfile li scrivi tu.** Claude fornisce **solo l'ossatura commentata** — le fasi, l'ordine dei layer, i punti dove va cosa — poi li scrivi da zero; il `docker-compose.yml` resta delegabile — *concetti: perché l'ordine delle istruzioni determina la cache dei layer; perché si copiano prima i file di dipendenza e solo dopo il codice; cos'è una build multi-stage e perché il frontend ne ha bisogno (si compila con Node, si serve con nginx); `CMD` contro `ENTRYPOINT`; perché non si gira come root; a cosa serve `.dockerignore`* — *`docker compose up` da clone pulito serve l'app; e la prova che hai capito la cache: **modificando una riga di codice applicativo e ricostruendo, le dipendenze non vengono reinstallate** (verificabile dall'output del build e con `docker history`)*
 - [ ] **0.12** 🟢 Pipeline GitHub Actions unica per i due progetti, su push e su PR — *verde al primo push, badge nel README*
+- [ ] **0.12b** 🟢 Le due immagini pubblicate su **GitHub Container Registry**, con tag per branch: `develop` → `:test`, `main` → `:latest` — *concetti: perché un'immagine si costruisce una volta e si promuove, invece di ricostruirla per ogni ambiente* — *`docker pull ghcr.io/gianlucadore/chiaro-*:test` da una macchina pulita scarica l'immagine e `docker compose up` la serve senza compilare niente; il README dichiara che non esiste un ambiente pubblico in esecuzione*
 - [ ] **0.13** 🟢 SonarQube Cloud collegato: `sonar-project.properties`, step in pipeline, **Quality Gate che blocca** — *un code smell introdotto ad arte rende rosso il job; rimosso, torna verde*
 - [ ] **0.14** 🟡 **Connected Mode** dell'estensione verso il progetto Cloud — *concetti: perché senza di essa editor e CI dicono cose diverse* — *la stessa violazione compare nell'editor e nel job di CI*
 
