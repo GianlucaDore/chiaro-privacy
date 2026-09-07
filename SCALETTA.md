@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 4 / 67** — ultimo completato: **0.3** · corrente: **0.4**
+**Avanzamento: 5 / 67** — ultimo completato: **0.4** · corrente: **0.5**
 
 ---
 
@@ -33,7 +33,7 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 - [x] **0.2** 🟢 Git: repo, `.gitignore` unificato (corretta la doppia riga `.vscode/`), primo commit, repo pubblica su GitHub — *`git ls-files` mostra `.vscode/extensions.json` tracciato e nessun `.env`*
 - [x] **0.2b** 🟢 Identità git personale locale alla repo e **GitFlow ridotto**: branch `develop` creato da `main`, `main` protetto contro i push diretti, il modello documentato in CLAUDE.md §8.1 — *`git config --get user.email` dentro la repo dà l'identità personale e fuori quella di default della macchina; `git branch -r` elenca `origin/main` e `origin/develop`*
 - [x] **0.3** 🔴 **Correzione del bug `get_project_root()`** — *concetti: `Path.parents`, perché un percorso relativo al file è fragile, come si verifica* — *un test asserisce che `DOTENV` punta dentro la repo e che una variabile scritta nel `.env` arriva nei settings*
-- [ ] **0.4** 🟡 Pipfile: aggiunto `pydantic-settings`, rimossi `pyjwt` e `cryptography`, aggiornati FastAPI e Pydantic, aggiunti pytest/ruff/pyright — *da venv vuoto `pipenv install && pipenv run dev` parte al primo colpo*
+- [x] **0.4** 🟡 Pipfile: aggiunto `pydantic-settings`, rimossi `pyjwt` e `cryptography`, aggiornati FastAPI e Pydantic, aggiunti pytest/ruff/pyright — *da venv vuoto `pipenv install && pipenv run dev` parte al primo colpo*
 - [ ] **0.5** 🔴 `main.py` ripulito: lifespan invece di `on_event`, CORS da `BACKEND_CORS_ORIGIN`, `logging.basicConfig` una volta sola, **security headers attivati** — *concetti: cos'è il lifespan e perché ha sostituito gli event handler; cosa fa ciascuno dei security header oggi commentati (CSP, `X-Frame-Options`, `nosniff`, le tre policy Cross-Origin) e quali di essi hai già nella nota sull'auth; perché `basicConfig` chiamato due volte è un problema silenzioso* — *`curl -I` mostra CSP, `X-Frame-Options` e `X-Content-Type-Options`; l'app parte e si spegne senza warning di deprecazione*
 - [ ] **0.6** 🟡 **Migrazione a React 19** — *concetti: cosa cambia da 18, cosa si rompe, React Compiler* — *`npm ls react` dice 19.x; `tsc --noEmit` pulito; l'app parte senza warning in console*
 - [ ] **0.7** 🟢 tsconfig: aggiunti `noUncheckedIndexedAccess` e `exactOptionalPropertyTypes` — *`tsc --noEmit` pulito dopo le correzioni che i due flag fanno emergere*
