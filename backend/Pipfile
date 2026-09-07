@@ -3,18 +3,95 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+# =============================================================================
+# PASSO 0.4 — ZONA GIALLA 🟡: questo file lo modifichi TU.
+#
+# Io ho lasciato solo i cartelli. Ogni riga che inizia con "# TODO(0.4/n)" è una
+# cosa da fare: fatta quella, cancella il cartello.
+# La spiegazione di ogni singola voce, con il perché, è in docs/passi/0.4.md
+#
+# Criterio del passo: da venv vuoto, `pipenv install && pipenv run dev` parte al
+# primo colpo.
+# =============================================================================
+
 [packages]
+# --- Ciò che serve all'applicazione per girare in produzione ---
+
+# TODO(0.4/1) Aggiorna la versione. Oggi è ferma alla 0.111.0, di metà 2024;
+#             l'ultima pubblicata è la 0.141.1.
 fastapi = "==0.111.0"
+
+# TODO(0.4/2) Aggiorna la versione: dalla 0.29.0 alla 0.52.4.
+#             Gli "extras" fra parentesi quadre sono pacchetti opzionali che
+#             uvicorn si porta dietro solo se glieli chiedi: "standard" include
+#             il reload automatico e i websocket. Quella parte non si tocca.
 uvicorn = {extras = ["standard"], version = "==0.29.0"}
+
+# TODO(0.4/3) Aggiorna la versione: dalla 2.7.1 alla 2.13.5.
 pydantic = "==2.7.1"
+
+# TODO(0.4/4) AGGIUNGI QUI il pacchetto `pydantic-settings` (ultima: 2.15.0).
+#             ⚠️ Senza questo il backend non parte affatto: app/core/config.py
+#             alla riga 6 fa `from pydantic_settings import BaseSettings`, e
+#             quel modulo non è installato. È il buco più grave del template.
+
+# TODO(0.4/5) CANCELLA le due righe qui sotto, entrambe.
+#             Servivano per firmare e verificare token JWT, ma l'autenticazione
+#             di questo progetto (fase 2) è "stateful": una tabella `sessions`
+#             sul database e un cookie. Nessun JWT, quindi nessuno dei due serve.
 pyjwt = "==2.10.1"
 cryptography = "==44.0.2"
 
 [dev-packages]
+# --- Strumenti che servono a TE mentre sviluppi, non all'app in produzione ---
+# Restano fuori dall'immagine Docker finale (passo 0.11): l'app in produzione
+# non deve trasportare un motore di test che non eseguirà mai.
+
+# TODO(0.4/6)  AGGIUNGI `pytest` (ultima: 9.1.1) — esegue i test.
+#              I cinque test del passo 0.3 esistono già in tests/test_config.py
+#              ma senza pytest non c'è modo di lanciarli.
+
+# TODO(0.4/7)  AGGIUNGI `httpx` (ultima: 0.28.1) — client HTTP.
+#              Non è nella scaletta, ma il `TestClient` di FastAPI lo usa
+#              internamente per fingere di fare richieste all'app senza avviare
+#              un server vero. Senza httpx i test del passo 1.7 non partono.
+
+# TODO(0.4/8)  AGGIUNGI `ruff` (ultima: 0.16.6) — linter e formattatore.
+#              Se non sai cosa sia: leggi la sezione 3 di docs/passi/0.4.md.
+#              ❗ In questo passo lo si INSTALLA soltanto. NON lanciare ancora
+#              `ruff format`: riscriverebbe tutti i file in un colpo e la
+#              pulizia appartiene al passo 0.8.
+
+# TODO(0.4/9)  AGGIUNGI `pyright` (ultima: 1.1.411) — controllore di tipi.
+#              Anche questo spiegato nella sezione 3 di docs/passi/0.4.md.
 
 [scripts]
+# --- Scorciatoie: `pipenv run <nome>` esegue il comando corrispondente ---
+
+# TODO(0.4/10) Correggi il percorso del modulo in ENTRAMBE le righe qui sotto.
+#              `uvicorn main:app` significa: nel file `main.py` cerca la
+#              variabile chiamata `app`. Ma `main.py` non sta nella cartella
+#              `backend/`, sta in `backend/app/main.py`, quindi il nome del
+#              modulo da scrivere non è `main` ma `app.main`.
+#              Provalo ora, prima di correggerlo: l'errore che ottieni è
+#              esattamente quello che il criterio del passo ti chiede di far
+#              sparire.
 dev = "uvicorn main:app --host 127.0.0.1 --port 8000 --reload"
 prod = "uvicorn main:app --host 127.0.0.1 --port 8000 --workers 4"
 
+# TODO(0.4/11) AGGIUNGI tre scorciatoie tue, una per ogni strumento nuovo:
+#              - una per lanciare i test con pytest
+#              - una per lanciare il controllo di ruff
+#              - una per lanciare il controllo dei tipi con pyright
+#              I nomi li scegli tu; suggerimento: che siano corti e ovvi,
+#              perché li scriverai centinaia di volte.
+
 [requires]
+# TODO(0.4/12) Cambia in "3.12".
+#              Sulla macchina non c'è la 3.11: ci sono la 3.12 e la 3.13, e
+#              abbiamo scelto la 3.12. Se questa riga resta a 3.11, `pipenv
+#              install` si ferma cercando un interprete che non esiste.
+#              ⚠️ Ricordati anche del file `.python-version` accanto a questo,
+#              che contiene `3.11.7` e va allineato: quel file non può avere
+#              commenti, quindi il cartello sta qui.
 python_version = "3.11"

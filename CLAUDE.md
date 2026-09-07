@@ -74,6 +74,38 @@ Verde non significa invisibile. Scrivo il codice, poi:
 2. Segnalo le scelte che avrebbero potuto essere diverse e perché ho scelto così.
 3. Il passo **non si spunta** finché l'autore non ha rivisto tutto il codice.
 
+### 2.3 I marcatori nel codice — obbligatori in zona rossa e gialla
+
+**Su ogni passo 🔴 e 🟡, prima che l'autore scriva una riga, lascio i cartelli nei file
+che andrà a toccare.** Non è un extra da concedere a richiesta: è parte del passo, e
+senza di essi «spiegare» resta una conversazione che si dimentica appena la sessione
+si chiude.
+
+I marcatori si scrivono così:
+
+- **`TODO(<passo>/<n>)` numerati**, uno per ogni cosa da fare, nel punto esatto del
+  file in cui va fatta. La numerazione serve a poterli citare in conversazione e a
+  dare un ordine.
+- Ogni cartello dice **cosa** fare, **dove**, e soprattutto **perché** — mai *come*.
+  Un `TODO` che contiene la soluzione ha annullato il senso della zona.
+- **`⚠️` e `❗` sulle trappole**: le cose che sembrano giuste e non lo sono, e le cose
+  che in questo passo non vanno fatte perché appartengono al successivo.
+- **Un commento di intestazione** in cima al file, che dichiara il passo, la zona, il
+  criterio di completamento e il rimando a `docs/passi/<id>.md`.
+- **L'autore cancella ogni cartello quando ha fatto quella cosa**: il file diventa la
+  lista dei progressi, e a fine passo non ne deve restare nessuno. Un `TODO(<passo>)`
+  sopravvissuto al merge è un passo non finito.
+
+Dove il file non ammette commenti — un `.python-version`, un `.env` — il cartello va
+nel file più vicino che li ammette, con il rimando esplicito.
+
+**Il briefing `docs/passi/<id>.md` si scrive anche per i passi 🟡**, non solo per i
+🔴 (sezione 7). Sui passi che introducono uno strumento mai usato prima, il briefing
+parte dal presupposto che l'autore **non lo conosca affatto**: prima cosa fa e che
+problema risolve, poi come si usa, e solo alla fine cosa farne in questo progetto.
+Dare per scontato il vocabolario è il modo più rapido di rendere inutile una
+spiegazione.
+
 ---
 
 ## 3. Divieti espliciti di architettura
@@ -165,11 +197,11 @@ saltare avanti non rifiuto, ma dico **cosa manca e cosa si romperà**, e lascio 
 
 ---
 
-## 7. I briefing dei passi rossi
+## 7. I briefing dei passi rossi e gialli
 
-Per ogni passo 🔴 scrivo `docs/passi/<id>.md` **quando si arriva a quel passo**, non prima. È
-just-in-time per scelta: l'autore studia al momento del blocco, e un documento scritto in anticipo
-non verrebbe letto.
+Per ogni passo 🔴 **e 🟡** scrivo `docs/passi/<id>.md` **quando si arriva a quel passo**, non
+prima. È just-in-time per scelta: l'autore studia al momento del blocco, e un documento scritto in
+anticipo non verrebbe letto.
 
 Struttura del briefing:
 
@@ -193,8 +225,27 @@ La cronologia git è un artefatto di portfolio: viene letta.
 - **Conventional commits che citano il passo**: `feat(auth): rotazione session id [2.5]`
 - Commit **piccoli e frequenti**, uno per unità di lavoro comprensibile
 - Mai commit del tipo `wip`, `fix`, `update`
-- **Non faccio commit né push senza che l'autore lo chieda.** Li propongo.
+- **Non faccio commit né push del codice di implementazione senza che l'autore lo chieda.** Li
+  propongo. **Eccezione: l'impalcatura si committa e si pusha sempre** — vedi 8.3
 - Il messaggio è in italiano, i prefissi convenzionali in inglese
+
+### 8.3 L'impalcatura si committa e si pusha sempre
+
+L'**impalcatura** di un passo è tutto ciò che produco per prepararlo, e che per definizione non
+è l'implementazione che l'autore deve scrivere: il briefing `docs/passi/<id>.md`, i marcatori
+`TODO(<passo>/<n>)` con i loro commenti di intestazione, gli scheletri con firme e tipi senza
+logica, il test che fallisce, e le modifiche di processo a questo file e a `SCALETTA.md`.
+
+**Per l'impalcatura eseguo `git commit` e `git push` direttamente, sul branch di feature del
+passo, senza chiedere.** Il motivo è pratico: l'impalcatura deve stare nella cronologia *prima*
+che l'autore inizi, così il suo lavoro diventa un commit separato e leggibile invece di
+mescolarsi al materiale preparatorio nella stessa diff. E chiedere il permesso ogni volta è un
+giro di conversazione che non decide niente, lasciando intanto l'autore a lavorare su un working
+tree sporco.
+
+**Il commit del codice di implementazione resta da proporre**, non da eseguire di iniziativa:
+quello va rivisto prima di finire nella cronologia. Vale sia per il codice scritto dall'autore
+sia per quello scritto in sua deroga esplicita.
 
 ### 8.1 Il modello di branch — GitFlow ridotto
 
