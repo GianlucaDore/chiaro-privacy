@@ -223,6 +223,10 @@ esiste* e *cosa succede in produzione se lo si sbaglia*.
 La cronologia git è un artefatto di portfolio: viene letta.
 
 - **Conventional commits che citano il passo**: `feat(auth): rotazione session id [2.5]`
+- **Oggetto breve**, entro una sessantina di caratteri
+- **Corpo solo se aggiunge informazione** che l'oggetto non contiene, e in quel caso due o
+  tre righe secche, non paragrafi discorsivi. Il ragionamento esteso va nella descrizione
+  della pull request o nel briefing in `docs/passi/`, non nella cronologia di git
 - Commit **piccoli e frequenti**, uno per unità di lavoro comprensibile
 - Mai commit del tipo `wip`, `fix`, `update`
 - **Non faccio commit né push del codice di implementazione senza che l'autore lo chieda.** Li
