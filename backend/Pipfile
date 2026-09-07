@@ -3,23 +3,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
-# =============================================================================
-# PASSO 0.4 — ZONA GIALLA 🟡: questo file lo modifichi TU.
-#
-# Io ho lasciato solo i cartelli. Ogni riga che inizia con "# TODO(0.4/n)" è una
-# cosa da fare: fatta quella, cancella il cartello.
-# La spiegazione di ogni singola voce, con il perché, è in docs/passi/0.4.md
-#
-# Criterio del passo: da venv vuoto, `pipenv install && pipenv run dev` parte al
-# primo colpo.
-# =============================================================================
-
 [packages]
-# --- Ciò che serve all'applicazione per girare in produzione ---
-
 # TODO(0.4/1) Aggiorna la versione. Oggi è ferma alla 0.111.0, di metà 2024;
 #             l'ultima pubblicata è la 0.141.1.
-fastapi = "==0.111.0"
+fastapi = "==0.141.0"
 
 # TODO(0.4/2) Aggiorna la versione: dalla 0.29.0 alla 0.52.4.
 #             Gli "extras" fra parentesi quadre sono pacchetti opzionali che
@@ -87,11 +74,26 @@ prod = "uvicorn main:app --host 127.0.0.1 --port 8000 --workers 4"
 #              perché li scriverai centinaia di volte.
 
 [requires]
-# TODO(0.4/12) Cambia in "3.12".
-#              Sulla macchina non c'è la 3.11: ci sono la 3.12 e la 3.13, e
-#              abbiamo scelto la 3.12. Se questa riga resta a 3.11, `pipenv
-#              install` si ferma cercando un interprete che non esiste.
-#              ⚠️ Ricordati anche del file `.python-version` accanto a questo,
-#              che contiene `3.11.7` e va allineato: quel file non può avere
-#              commenti, quindi il cartello sta qui.
+# TODO(0.4/12) DECIDI la versione e scrivila qui. Le due opzioni sono entrambe
+#              valide e hanno costi diversi.
+#
+#              ⚠️ CORREZIONE di quanto ti avevo detto prima: la 3.11 C'È.
+#              Mi ero basato su `py -0`, che elenca solo gli interpreti
+#              registrati in Windows, mentre pyenv tiene i propri fuori da quel
+#              registro. La situazione reale è questa:
+#                - pyenv ha installate 3.10.11, 3.11.7 e 3.11.9
+#                - il file `.python-version` di questa cartella chiede 3.11.7,
+#                  e quella versione c'è: nessun disallineamento
+#                - la 3.12.1 e la 3.13 esistono, ma FUORI da pyenv
+#
+#              Opzione A - lasciare "3.11": funziona subito, senza toccare
+#              nulla, e `.python-version` resta com'è.
+#              Opzione B - mettere "3.12": più moderna, ma costa un passaggio
+#              in più, `pyenv install 3.12.x`, e l'allineamento di
+#              `.python-version`. Senza quel passaggio pyenv non trova la
+#              versione richiesta e `python`, in questa cartella, smette di
+#              rispondere.
+#
+#              ⚠️ `.python-version` non può contenere commenti, quindi il
+#              cartello che lo riguarda sta qui.
 python_version = "3.11"
