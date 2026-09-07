@@ -4,96 +4,45 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-# TODO(0.4/1) Aggiorna la versione. Oggi è ferma alla 0.111.0, di metà 2024;
-#             l'ultima pubblicata è la 0.141.1.
-fastapi = "==0.141.0"
+fastapi = "~=0.141.0"
 
-# TODO(0.4/2) Aggiorna la versione: dalla 0.29.0 alla 0.52.4.
 #             Gli "extras" fra parentesi quadre sono pacchetti opzionali che
 #             uvicorn si porta dietro solo se glieli chiedi: "standard" include
 #             il reload automatico e i websocket. Quella parte non si tocca.
-uvicorn = {extras = ["standard"], version = "==0.29.0"}
-
-# TODO(0.4/3) Aggiorna la versione: dalla 2.7.1 alla 2.13.5.
-pydantic = "==2.7.1"
-
-# TODO(0.4/4) AGGIUNGI QUI il pacchetto `pydantic-settings` (ultima: 2.15.0).
-#             ⚠️ Senza questo il backend non parte affatto: app/core/config.py
-#             alla riga 6 fa `from pydantic_settings import BaseSettings`, e
-#             quel modulo non è installato. È il buco più grave del template.
-
-# TODO(0.4/5) CANCELLA le due righe qui sotto, entrambe.
-#             Servivano per firmare e verificare token JWT, ma l'autenticazione
-#             di questo progetto (fase 2) è "stateful": una tabella `sessions`
-#             sul database e un cookie. Nessun JWT, quindi nessuno dei due serve.
-pyjwt = "==2.10.1"
-cryptography = "==44.0.2"
+uvicorn = {extras = ["standard"], version = "~=0.52.4"}
+pydantic = "~=2.13"
+pydantic-settings = "==2.15.0"
 
 [dev-packages]
-# --- Strumenti che servono a TE mentre sviluppi, non all'app in produzione ---
-# Restano fuori dall'immagine Docker finale (passo 0.11): l'app in produzione
+# --- Strumenti che servono mentre si sviluppa, non all'app in produzione ---
+# Restano fuori dall'immagine Docker finale: l'app in produzione
 # non deve trasportare un motore di test che non eseguirà mai.
 
-# TODO(0.4/6)  AGGIUNGI `pytest` (ultima: 9.1.1) — esegue i test.
-#              I cinque test del passo 0.3 esistono già in tests/test_config.py
-#              ma senza pytest non c'è modo di lanciarli.
+pytest = "==9.1.1"
 
-# TODO(0.4/7)  AGGIUNGI `httpx` (ultima: 0.28.1) — client HTTP.
-#              Non è nella scaletta, ma il `TestClient` di FastAPI lo usa
+#              httpx Non è nella scaletta, ma il `TestClient` di FastAPI lo usa
 #              internamente per fingere di fare richieste all'app senza avviare
 #              un server vero. Senza httpx i test del passo 1.7 non partono.
+httpx = "~=0.28.1"
+ruff = "~=0.16.6"
 
-# TODO(0.4/8)  AGGIUNGI `ruff` (ultima: 0.16.6) — linter e formattatore.
-#              Se non sai cosa sia: leggi la sezione 3 di docs/passi/0.4.md.
-#              ❗ In questo passo lo si INSTALLA soltanto. NON lanciare ancora
-#              `ruff format`: riscriverebbe tutti i file in un colpo e la
-#              pulizia appartiene al passo 0.8.
-
-# TODO(0.4/9)  AGGIUNGI `pyright` (ultima: 1.1.411) — controllore di tipi.
-#              Anche questo spiegato nella sezione 3 di docs/passi/0.4.md.
+#              pyright: controllore di tipi.
+pyright = "==1.1.411"
 
 [scripts]
 # --- Scorciatoie: `pipenv run <nome>` esegue il comando corrispondente ---
 
-# TODO(0.4/10) Correggi il percorso del modulo in ENTRAMBE le righe qui sotto.
-#              `uvicorn main:app` significa: nel file `main.py` cerca la
+# `uvicorn main:app` significa: nel file `main.py` cerca la
 #              variabile chiamata `app`. Ma `main.py` non sta nella cartella
 #              `backend/`, sta in `backend/app/main.py`, quindi il nome del
 #              modulo da scrivere non è `main` ma `app.main`.
-#              Provalo ora, prima di correggerlo: l'errore che ottieni è
-#              esattamente quello che il criterio del passo ti chiede di far
-#              sparire.
-dev = "uvicorn main:app --host 127.0.0.1 --port 8000 --reload"
-prod = "uvicorn main:app --host 127.0.0.1 --port 8000 --workers 4"
+dev = "uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload"
+prod = "uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 4"
 
-# TODO(0.4/11) AGGIUNGI tre scorciatoie tue, una per ogni strumento nuovo:
-#              - una per lanciare i test con pytest
-#              - una per lanciare il controllo di ruff
-#              - una per lanciare il controllo dei tipi con pyright
-#              I nomi li scegli tu; suggerimento: che siano corti e ovvi,
-#              perché li scriverai centinaia di volte.
+#           `pytest tests/` esegue TUTTI i tests nella folder `tests/`
+test = "pytest tests/"
+ruff = "ruff check"
+pyright = "pyright app/"
 
 [requires]
-# TODO(0.4/12) DECIDI la versione e scrivila qui. Le due opzioni sono entrambe
-#              valide e hanno costi diversi.
-#
-#              ⚠️ CORREZIONE di quanto ti avevo detto prima: la 3.11 C'È.
-#              Mi ero basato su `py -0`, che elenca solo gli interpreti
-#              registrati in Windows, mentre pyenv tiene i propri fuori da quel
-#              registro. La situazione reale è questa:
-#                - pyenv ha installate 3.10.11, 3.11.7 e 3.11.9
-#                - il file `.python-version` di questa cartella chiede 3.11.7,
-#                  e quella versione c'è: nessun disallineamento
-#                - la 3.12.1 e la 3.13 esistono, ma FUORI da pyenv
-#
-#              Opzione A - lasciare "3.11": funziona subito, senza toccare
-#              nulla, e `.python-version` resta com'è.
-#              Opzione B - mettere "3.12": più moderna, ma costa un passaggio
-#              in più, `pyenv install 3.12.x`, e l'allineamento di
-#              `.python-version`. Senza quel passaggio pyenv non trova la
-#              versione richiesta e `python`, in questa cartella, smette di
-#              rispondere.
-#
-#              ⚠️ `.python-version` non può contenere commenti, quindi il
-#              cartello che lo riguarda sta qui.
-python_version = "3.11"
+python_version = "3.12"
