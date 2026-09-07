@@ -57,7 +57,7 @@ class Settings(BaseSettings):
  
 	ENV: Env = Env(os.getenv('ENV', 'DEV'))
 
-	PROJECT_NAME: str = ""
+	PROJECT_NAME: str = "chiaro-privacy"
 
 	API_PREFIX: str = "/api"
 

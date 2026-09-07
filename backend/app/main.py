@@ -1,29 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-# TODO(0.4/13) Correggi queste due righe di import, aggiungendo il prefisso del
-#              pacchetto: non `core.config` ma `app.core.config`, e non
-#              `api.router` ma `app.api.router`.
-#
-#              Perche': un "pacchetto" Python e' una cartella che contiene un
-#              file __init__.py. Qui il pacchetto e' `app/`, e Python risolve
-#              gli import a partire dalla cartella da cui lanci il processo,
-#              cioe' `backend/`. Da `backend/` la cartella `core` non esiste:
-#              esiste `app/core`. Quindi il nome completo del modulo e'
-#              `app.core.config`.
-#
-#              Il modo giusto di convincersene e' provare: lancia
-#              `pipenv run dev` PRIMA di correggere e leggi l'errore. Dira'
-#              ModuleNotFoundError e ti dira' quale nome non ha trovato.
-#
-#              Nota: questa correzione appartiene al passo 0.4 e non al 0.5,
-#              perche' senza di essa `pipenv run dev` non parte e il criterio
-#              del passo 0.4 non e' verificabile. Tutto il RESTO di questo file
-#              (l'on_event deprecato, i security header commentati, il CORS con
-#              l'indirizzo scritto a mano, il basicConfig duplicato) e' il passo
-#              0.5: non toccarlo adesso.
-from core.config import settings, Env
-from api.router import api_router
+from app.core.config import settings, Env
+from app.api.router import api_router
 import logging
 from starlette.middleware.base import BaseHTTPMiddleware
 import os
