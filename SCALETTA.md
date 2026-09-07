@@ -1,6 +1,6 @@
 # SCALETTA — Chiaro
 
-**71 passi in 7 fasi, più un backlog.** È la spina dorsale del progetto e la fonte di verità unica
+**67 passi in 7 fasi, più un backlog di 8.** È la spina dorsale del progetto e la fonte di verità unica
 sull'avanzamento: il passo corrente è **il primo non spuntato**.
 
 ## Come si usa
@@ -9,16 +9,18 @@ sull'avanzamento: il passo corrente è **il primo non spuntato**.
 |---|---|
 | 🔴 **Zona rossa** | Lo scrivi tu da zero. Claude spiega, dà lo scheletro, scrive il test che fallisce, e ti interroga. Non scrive la soluzione |
 | 🟡 **Zona gialla** | Claude spiega e ti interroga, tu scrivi |
-| 🟢 **Zona verde** | Claude scrive, poi ti presenta la diff e te la spiega riga per riga. Spunti solo dopo aver rivisto **tutto** il codice |
+| 🟢 **Zona verde** | Claude scrive, poi ti presenta la diff e te la spiega riga per riga |
 
-**La casella la spunti tu, mai Claude.** Claude verifica il criterio, mostra l'output reale, e dice
-«criterio soddisfatto, puoi spuntare X.Y». La spunta è la tua dichiarazione di aver capito.
+**La casella la spunta Claude**, ma solo dopo aver eseguito la verifica del criterio e mostrato
+l'output reale. La spunta certifica che **il criterio è verificato**, non che tu abbia compreso: sui
+passi 🔴 e 🟡 quel momento sono le domande di verifica del briefing, sui passi 🟢 la rilettura della
+diff. Se rileggendo trovi un problema, il passo si riapre e la casella si toglie.
 
 Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I passi 🔴 hanno anche
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 1 / 71** — ultimo completato: nessuno · corrente: **0.2**
+**Avanzamento: 4 / 67** — ultimo completato: **0.3** · corrente: **0.4**
 
 ---
 
@@ -28,9 +30,9 @@ a quel passo, non prima.
 aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 
 - [x] **0.1** 🟢 Albero combinato, con i file dei template al posto giusto — *l'albero corrisponde; `app/` esiste come pacchetto; nessuna cartella resta vuota nel clone*
-- [ ] **0.2** 🟢 Git: repo, `.gitignore` unificato (corretta la doppia riga `.vscode/`), primo commit, repo pubblica su GitHub — *`git ls-files` mostra `.vscode/extensions.json` tracciato e nessun `.env`*
-- [ ] **0.2b** 🟢 Identità git personale locale alla repo e **GitFlow ridotto**: branch `develop` creato da `main`, `main` protetto contro i push diretti, il modello documentato in CLAUDE.md §8.1 — *`git config --get user.email` dentro la repo dà l'identità personale e fuori quella di default della macchina; `git branch -r` elenca `origin/main` e `origin/develop`*
-- [ ] **0.3** 🔴 **Correzione del bug `get_project_root()`** — *concetti: `Path.parents`, perché un percorso relativo al file è fragile, come si verifica* — *un test asserisce che `DOTENV` punta dentro la repo e che una variabile scritta nel `.env` arriva nei settings*
+- [x] **0.2** 🟢 Git: repo, `.gitignore` unificato (corretta la doppia riga `.vscode/`), primo commit, repo pubblica su GitHub — *`git ls-files` mostra `.vscode/extensions.json` tracciato e nessun `.env`*
+- [x] **0.2b** 🟢 Identità git personale locale alla repo e **GitFlow ridotto**: branch `develop` creato da `main`, `main` protetto contro i push diretti, il modello documentato in CLAUDE.md §8.1 — *`git config --get user.email` dentro la repo dà l'identità personale e fuori quella di default della macchina; `git branch -r` elenca `origin/main` e `origin/develop`*
+- [x] **0.3** 🔴 **Correzione del bug `get_project_root()`** — *concetti: `Path.parents`, perché un percorso relativo al file è fragile, come si verifica* — *un test asserisce che `DOTENV` punta dentro la repo e che una variabile scritta nel `.env` arriva nei settings*
 - [ ] **0.4** 🟡 Pipfile: aggiunto `pydantic-settings`, rimossi `pyjwt` e `cryptography`, aggiornati FastAPI e Pydantic, aggiunti pytest/ruff/pyright — *da venv vuoto `pipenv install && pipenv run dev` parte al primo colpo*
 - [ ] **0.5** 🔴 `main.py` ripulito: lifespan invece di `on_event`, CORS da `BACKEND_CORS_ORIGIN`, `logging.basicConfig` una volta sola, **security headers attivati** — *concetti: cos'è il lifespan e perché ha sostituito gli event handler; cosa fa ciascuno dei security header oggi commentati (CSP, `X-Frame-Options`, `nosniff`, le tre policy Cross-Origin) e quali di essi hai già nella nota sull'auth; perché `basicConfig` chiamato due volte è un problema silenzioso* — *`curl -I` mostra CSP, `X-Frame-Options` e `X-Content-Type-Options`; l'app parte e si spegne senza warning di deprecazione*
 - [ ] **0.6** 🟡 **Migrazione a React 19** — *concetti: cosa cambia da 18, cosa si rompe, React Compiler* — *`npm ls react` dice 19.x; `tsc --noEmit` pulito; l'app parte senza warning in console*

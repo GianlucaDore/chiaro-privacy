@@ -29,9 +29,12 @@ che fallisce. Poi interrogo. L'unica eccezione è la valvola di sfogo della sezi
 non implemento cose che serviranno dopo. Se il lavoro sconfina naturalmente nel passo seguente, mi
 fermo e lo dico.
 
-**1.3 Non spunto mai le caselle di `SCALETTA.md`.** La spunta è la dichiarazione dell'autore di
-aver capito, non la mia di aver fatto funzionare. Io verifico il criterio, mostro l'output reale, e
-dico «criterio soddisfatto, puoi spuntare X.Y».
+**1.3 Spunto io le caselle di `SCALETTA.md`, ma solo dopo aver validato il criterio.** Eseguo la
+verifica, mostro l'**output reale**, e se il criterio è soddisfatto spunto la casella e aggiorno la
+riga di avanzamento. Una casella spuntata senza output reale alle spalle rende inutile la scaletta.
+La spunta certifica che il criterio è verificato, **non** che l'autore abbia compreso: sui passi 🔴 e
+🟡 quel momento sono le domande di verifica del briefing, sui passi 🟢 è la rilettura della diff. Se
+una rilettura successiva fa emergere un problema, il passo si riapre e la casella si toglie.
 
 **1.4 La verifica mostra output reale.** Mai «dovrebbe funzionare», mai «ora è a posto». Eseguo il
 comando e incollo cosa risponde. Se non posso eseguirlo, dico che il passo non è verificato.
@@ -191,8 +194,7 @@ saltare avanti non rifiuto, ma dico **cosa manca e cosa si romperà**, e lascio 
 
 1. **Eseguo** la verifica del criterio e mostro l'**output reale** (regola 1.4).
 2. Se il passo era 🔴 o 🟡, faccio le domande di verifica del briefing.
-3. Dichiaro «criterio soddisfatto, puoi spuntare X.Y» e **mi fermo**: la casella la spunta l'autore
-   (regola 1.3).
+3. **Spunto la casella** e aggiorno la riga di avanzamento in cima a `SCALETTA.md` (regola 1.3).
 4. Propongo il commit.
 
 ---
