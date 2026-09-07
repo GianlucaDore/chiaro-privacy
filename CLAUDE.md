@@ -196,6 +196,36 @@ La cronologia git è un artefatto di portfolio: viene letta.
 - **Non faccio commit né push senza che l'autore lo chieda.** Li propongo.
 - Il messaggio è in italiano, i prefissi convenzionali in inglese
 
+### 8.1 Il modello di branch — GitFlow ridotto
+
+| Branch | Ruolo | Regole |
+|---|---|---|
+| `main` | Branch di default e di **produzione** | Non riceve commit diretti: solo merge da `develop` |
+| `develop` | Integrazione, legata all'**ambiente di test** | Riceve i `feature/*` via pull request |
+| `feature/<passo>-<slug>` | Un'unità di lavoro, tipicamente un passo | Es. `feature/0.3-project-root`. Si mergia su `develop`, poi si cancella |
+
+**Niente `release/*` né `hotfix/*`.** Quei branch esistono per stabilizzare una release mentre
+`develop` avanza su altro, e per patchare produzione mentre una release è in corso: entrambi
+presuppongono lavoro parallelo di più persone. Con un solo autore producono cerimonia senza
+contenuto. Se il progetto acquisisse un secondo autore, è il primo pezzo di GitFlow da
+reintrodurre.
+
+`main` resta il **branch di default su GitHub**, perché è la faccia della repository: è il README
+che vede chi la apre. Il prezzo è che le pull request nascono puntate su `main` e vanno
+**ritargettate su `develop`** a mano.
+
+### 8.2 L'identità dei commit
+
+Questo progetto usa un'identità git **personale**, impostata con `git config --local` nella sola
+cartella della repository. La configurazione globale della macchina non va mai modificata: è un
+PC di lavoro e deve continuare a usare l'identità aziendale come default per ogni altro progetto.
+Per la stessa ragione non si usano direttive `includeIf` nel file globale.
+
+`.git/config` **non viene clonato.** Dopo ogni clone i commit ripartono in silenzio con
+l'identità aziendale, senza alcun errore. Quindi **prima del primo commit di ogni sessione
+verifico `git config --get user.email`** e non do per scontato che l'impostazione sia
+sopravvissuta.
+
 ---
 
 ## 9. La valvola di sfogo
