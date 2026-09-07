@@ -1,0 +1,70 @@
+# ---------------------------------------------------------------------------
+# Chiaro — .gitignore unificato (backend Python + frontend Node)
+# ---------------------------------------------------------------------------
+
+# --- Segreti e configurazione locale ---------------------------------------
+# I .env contengono chiavi API e non entrano mai nella cronologia.
+# Gli .env.example sì: sono la documentazione delle variabili richieste.
+.env
+.env.*
+!.env.example
+
+# --- Python / backend ------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+
+# Copertura: si genera in CI e la legge lo scanner Sonar, non si committa.
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Database SQLite e file caricati a runtime.
+*.db
+*.sqlite
+*.sqlite3
+uploads/
+
+# --- Node / frontend -------------------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+.vite/
+coverage/
+.eslintcache
+.lighthouseci/
+*.local
+
+# --- Editor ----------------------------------------------------------------
+# Si ignora il *contenuto* di .vscode/ e si riammettono i singoli file
+# condivisi di proposito. Scrivere `.vscode/` escluderebbe la cartella
+# stessa, e git non può riammettere un file dentro una cartella esclusa:
+# la negazione qui sotto non avrebbe alcun effetto.
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+
+# --- Sistema operativo -----------------------------------------------------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# --- Log -------------------------------------------------------------------
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

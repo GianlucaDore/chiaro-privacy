@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "==0.111.0"
+uvicorn = {extras = ["standard"], version = "==0.29.0"}
+pydantic = "==2.7.1"
+pyjwt = "==2.10.1"
+cryptography = "==44.0.2"
+
+[dev-packages]
+
+[scripts]
+dev = "uvicorn main:app --host 127.0.0.1 --port 8000 --reload"
+prod = "uvicorn main:app --host 127.0.0.1 --port 8000 --workers 4"
+
+[requires]
+python_version = "3.11"
