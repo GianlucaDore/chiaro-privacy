@@ -71,5 +71,16 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
+# TODO(0.5/13) Questa riga esiste identica anche in app/main.py:56, ed è
+#              QUESTA a vincere: main.py importa app.core.config alla riga
+#              3, quindi viene eseguita per prima, e `logging.basicConfig`
+#              esce in silenzio se il logger radice ha già degli handler.
+#              Quella in main.py non fa dunque assolutamente niente.
+#              Una delle due va cancellata. Prima di scegliere, valuta se
+#              un modulo di configurazione debba riconfigurare il logging
+#              globale come effetto collaterale dell'import: `import`
+#              dovrebbe dichiarare, non agire.
+#              Il passo 1.8 sposterà tutto in app/core/logging.py, che oggi
+#              è vuoto: questa è una decisione provvisoria.
 logging.basicConfig(format='%(levelname)-9s %(asctime)s - %(name)s - %(message)s', level=logging.DEBUG if settings.ENV == Env.DEV else logging.INFO)
 
