@@ -7,15 +7,43 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
 
-def get_project_root() -> Path:
-    """
-    Ritorna la radice del progetto.
-    Se questo file è in app/core/config.py -> parents[2] è la repo root.
-    """
-    return Path(__file__).resolve().parents[2]
+# Il file che marca la radice del backend. Il Pipfile definisce le dipendenze
+# del progetto Python, quindi per costruzione non può stare altrove.
+MARCATORE_RADICE = "Pipfile"
 
-    
-DOTENV = (get_project_root() / ".env")
+
+def risali_fino_al_marcatore(partenza: Path, marcatore: str = MARCATORE_RADICE) -> Path:
+    """
+    Risale l'albero delle cartelle da `partenza` e ritorna la prima che
+    contiene `marcatore`.
+
+    Solleva RuntimeError se non lo trova. Un percorso di configurazione
+    sbagliato deve fallire subito e a voce alta: pydantic-settings ignora in
+    silenzio un `env_file` inesistente, quindi senza questa eccezione
+    l'applicazione partirebbe con tutti i valori di default e senza indizi.
+    """
+    for candidato in (partenza, *partenza.parents):
+        if (candidato / marcatore).is_file():
+            return candidato
+    raise RuntimeError(
+        f"Radice del backend non trovata: nessun '{marcatore}' "
+        f"risalendo da {partenza}"
+    )
+
+
+def get_backend_root() -> Path:
+    """
+    Ritorna la radice del backend, cioè la cartella che contiene il Pipfile e
+    il file `.env`.
+
+    Non conta i livelli con `parents[n]`: quel conteggio lega il percorso alla
+    posizione esatta di questo modulo, e annidarlo di una sola cartella
+    sposterebbe la radice senza che nulla segnali l'errore.
+    """
+    return risali_fino_al_marcatore(Path(__file__).resolve().parent)
+
+
+DOTENV = get_backend_root() / ".env"
 
 class Env(Enum):
 	DEV = "DEV"
