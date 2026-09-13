@@ -46,6 +46,10 @@ export const theme = createTheme({
         body: { backgroundColor: tokens.appBg }
       }
     },
+    // ⚠️ TODO(0.6/6) Questi defaultProps NON sono quelli rimossi da React 19.
+    //                Sono il meccanismo del tema di MUI. Capire la differenza
+    //                e' la domanda 2 del briefing; cancellarli romperebbe il
+    //                tema senza che React c'entri nulla.
     MuiButton: {
       defaultProps: { variant: 'contained', size: 'medium' },
       styleOverrides: {
