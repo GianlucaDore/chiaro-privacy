@@ -217,6 +217,32 @@ correzioni sono **brevi**; se un concetto richiede una spiegazione estesa metto 
 risorsa** che lo spiega, invece di scriverla lì. Un file di debito che diventa un manuale non viene
 riletto.
 
+### 6.2 Gli appunti nel vault Obsidian
+
+Chiuso un passo, i concetti toccati dalle sue domande di verifica vanno portati nel **vault
+Obsidian** dell'autore, in `C:\Users\gdore\Videos\Gianluca`, che è governato da un proprio
+`CLAUDE.md` da leggere prima di scrivere qualunque cosa.
+
+**Prima si chiede.** Propongo l'elenco degli argomenti che meriterebbero una nota, distinguendo
+quelli che hanno già una nota da arricchire da quelli che ne richiedono una nuova, e **attendo
+conferma su quali fare**. Non si scrive niente nel vault senza quel via libera.
+
+**Si riusano le parole e gli esempi dell'autore, corretti.** È la regola che dà valore a queste
+note: una nota scritta nel suo linguaggio è una nota che riconosce come propria, e i suoi esempi
+sono spesso migliori dei miei — l'esempio di `openai` che si rompe se `httpx` avanza, uscito dalla
+domanda 5 del passo 0.4, è l'argomento più forte a favore del pinning esatto e nel briefing non
+c'era. Dove la risposta conteneva un errore, l'esempio si **corregge** e si usa comunque: è più
+utile vedere la propria frase raddrizzata che leggerne una nuova.
+
+**La prosa resta semplice**, nel registro impersonale del vault, e la nota resta corta — dalle 300
+alle 500 parole. Valgono tutte le convenzioni del `CLAUDE.md` del vault: le sette chiavi di
+frontmatter con `redazione: claude` e `revisionata` **vuota**, la regola sulle emoji della sezione
+3.4, la riga `---` sotto ogni heading, la sezione `Vedi anche`, e le terminazioni di riga in LF.
+
+**Meglio arricchire una nota esistente che crearne una nuova**, quando l'argomento ha già una casa.
+E la nota nuova va **agganciata all'indice dell'area**, altrimenti esiste nel grafo ma non si
+raggiunge navigando.
+
 ---
 
 ## 7. I briefing dei passi rossi e gialli

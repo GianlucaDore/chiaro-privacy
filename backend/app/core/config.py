@@ -1,11 +1,9 @@
 import os
-import logging
 from enum import Enum
-from typing import Union
-from pydantic import AnyHttpUrl, Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
+from pydantic import AnyHttpUrl, Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Il file che marca la radice del backend. Il Pipfile definisce le dipendenze
 # del progetto Python, quindi per costruzione non può stare altrove.
@@ -65,11 +63,8 @@ class Settings(BaseSettings):
 	# es.: INTERCENTER_ENDPOINT: str = os.getenv('INTERCENTER_ENDPOINT')
 	
 
-	BACKEND_CORS_ORIGIN: Union[str, AnyHttpUrl] = Field(default='', alias='BACKEND_CORS_ORIGIN')
+	BACKEND_CORS_ORIGIN: str | AnyHttpUrl = Field(default='', alias='BACKEND_CORS_ORIGIN')
 
 
 
 settings = Settings()
-
-logging.basicConfig(format='%(levelname)-9s %(asctime)s - %(name)s - %(message)s', level=logging.DEBUG if settings.ENV == Env.DEV else logging.INFO)
-
