@@ -17,7 +17,40 @@ Il file ha due sezioni, alimentate da due meccanismi distinti del `CLAUDE.md`:
 Codice che avrei dovuto scrivere l'autore e che ho scritto io, con la data e cosa resta da
 capire.
 
-*Nessuna voce.*
+### 0.5 · Le decisioni sui response header · 13 settembre 2026
+
+**Cosa ho scritto io.** L'intero blocco `SecurityHeadersMiddleware` di
+[`backend/app/main.py`](backend/app/main.py), la gestione delle origini CORS e l'esposizione
+condizionata della documentazione. L'autore ha implementato il passo — lifespan, CORS dai
+settings, `basicConfig` unico — ma ha delegato esplicitamente la **scelta dei valori degli
+header**, che era il cuore del passo.
+
+**Le decisioni prese, e perché.**
+
+| Decisione | Motivo |
+| --- | --- |
+| CSP `default-src 'none'` sulle risposte dell'API | una risposta JSON non deve caricare niente: è la raccomandazione OWASP per le API |
+| CSP allargata solo sulle pagine HTML di `/docs` e `/redoc` | Swagger UI carica JS e CSS da `cdn.jsdelivr.net` e FastAPI genera uno `<script>` inline, che senza `'unsafe-inline'` non parte |
+| **Documentazione disattivata in produzione** | è la conseguenza del punto sopra: non si possono avere insieme docs interattive e CSP stretta senza rattoppare l'HTML generato da FastAPI. Ed è comunque una mappa dell'API regalata a chiunque |
+| `Cross-Origin-Embedder-Policy` **rimosso** | `require-corp` serve a ottenere l'isolamento cross-origin, che serve a `SharedArrayBuffer` e ai timer ad alta risoluzione. Niente di tutto ciò è in programma, e avrebbe bloccato gli asset di `/docs` |
+| `report-to=default` **rimosso** da COOP e COEP | puntava a un gruppo di endpoint mai dichiarato con `Reporting-Endpoints`, e il nome andava fra virgolette. Non riportava niente a nessuno |
+| `Cache-Control: no-store` ovunque **tranne** documentazione e schema | i dati dell'utente non vanno in cache; le pagine di `/docs` non contengono niente di personale |
+| `Referrer-Policy: no-referrer` **aggiunto** | gli URL dell'API conterranno identificativi di analisi, che non devono finire nell'header `Referer` verso altri siti |
+| HSTS attivo **solo in PROD**, senza `preload` | su HTTP semplice è inerte, e `preload` è una decisione che i browser ricordano per mesi |
+| `X-Frame-Options` e `frame-ancestors` **tenuti entrambi** | ridondanza voluta: il secondo è il moderno, il primo copre i browser che non lo leggono |
+| CORS registrato **solo se `BACKEND_CORS_ORIGIN` è valorizzato** | `[""]` è una lista che non ammette niente ma sembra configurata |
+| Ordine dei middleware **lasciato com'era** | Starlette inserisce in testa, quindi il CORS registrato per ultimo è il più esterno: è l'ordine giusto, perché gli header CORS devono finire anche sulle risposte di errore |
+
+**Cosa resta da capire.** La differenza fra ciò che protegge un header applicato al
+*documento* (CSP, COOP, `X-Frame-Options`) e uno applicato alla *risorsa* (CORP), perché è
+la ragione per cui metà di questi header non ha alcun effetto su una risposta JSON. E il
+motivo per cui CORP non viene consultato sulle richieste in modalità CORS, che è il punto da
+cui dipende il fatto che `same-origin` non ostacoli il frontend.
+
+📄 [OWASP — HTTP Security Response Headers](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html) · [MDN — Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
+
+**Le cinque domande di verifica del passo sono rimaste senza risposta** e restano aperte in
+[`docs/passi/0.5.md`](docs/passi/0.5.md).
 
 > **Nota.** Il passo **0.3** è stato implementato da Claude su autorizzazione esplicita
 > dell'autore, che ha però chiesto di **non** annotarlo qui. La deroga è comunque dichiarata
