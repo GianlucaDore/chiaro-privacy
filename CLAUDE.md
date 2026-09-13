@@ -109,6 +109,30 @@ problema risolve, poi come si usa, e solo alla fine cosa farne in questo progett
 Dare per scontato il vocabolario è il modo più rapido di rendere inutile una
 spiegazione.
 
+#### 2.3.1 Gli aggiornamenti di versione si spiegano come differenza
+
+Quando un passo porta avanti di una versione maggiore una tecnologia che l'autore
+**già conosce nella versione precedente**, il briefing non espone la versione nuova a
+sé stante: la espone come **differenza rispetto a quella che l'autore usa**. Per ogni
+cosa che cambia servono tre pezzi — come si scriveva prima, come si scrive adesso,
+e perché è cambiato — e le prime due vanno mostrate in codice, non descritte a parole.
+
+La ragione è che una conoscenza solida della versione precedente **sembra**
+sufficiente e invece è la condizione più insidiosa: le API rimosse sono proprio
+quelle usate per abitudine, e quelle nuove non hanno alcun aggancio nell'esperienza
+di chi legge. È il caso di React 19 al passo 0.6, dichiarato esplicitamente
+dall'autore: «io non so niente di react 19, conosco solo react 18».
+
+Ne segue anche che **ogni passaggio, spiegazione e suggerimento va scritto nel
+briefing e nei cartelli**, non lasciato alla conversazione: la conversazione finisce
+con la sessione, il file resta. Un briefing che rimanda a «come sai già» ha fallito.
+
+Il registro è quello con cui l'autore studia nel proprio vault Obsidian — prosa
+semplice, concetto generale prima del caso del progetto, coppie ✅ / ❌ per
+contrapporre il modo giusto e quello sbagliato, e la regola compressa in una riga
+di citazione. Briefing e note del vault sono due facce dello stesso percorso di
+studio, quindi il briefing va scritto in modo che diventare una nota gli costi poco.
+
 ---
 
 ## 3. Divieti espliciti di architettura
