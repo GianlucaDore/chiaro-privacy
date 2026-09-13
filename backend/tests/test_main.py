@@ -13,7 +13,6 @@ loro scopo.
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 from fastapi.testclient import TestClient
 
@@ -78,6 +77,7 @@ def test_origini_cors_lette_dai_settings() -> None:
         cwd=get_backend_root(),
         capture_output=True,
         text=True,
+        check=False,
         env={**_ambiente_base(), "ENV": "DEV", "BACKEND_CORS_ORIGIN": atteso},
     )
 
@@ -102,6 +102,7 @@ def test_nessun_warning_di_deprecazione_all_avvio() -> None:
         cwd=get_backend_root(),
         capture_output=True,
         text=True,
+        check=False,
         env=_ambiente_base(),
     )
 
