@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 6 / 67** — ultimo completato: **0.5** · corrente: **0.6**
+**Avanzamento: 7 / 67** — ultimo completato: **0.6** · corrente: **0.7**
 
 ---
 
@@ -35,7 +35,7 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 - [x] **0.3** 🔴 **Correzione del bug `get_project_root()`** — *concetti: `Path.parents`, perché un percorso relativo al file è fragile, come si verifica* — *un test asserisce che `DOTENV` punta dentro la repo e che una variabile scritta nel `.env` arriva nei settings*
 - [x] **0.4** 🟡 Pipfile: aggiunto `pydantic-settings`, rimossi `pyjwt` e `cryptography`, aggiornati FastAPI e Pydantic, aggiunti pytest/ruff/pyright — *da venv vuoto `pipenv install && pipenv run dev` parte al primo colpo*
 - [x] **0.5** 🔴 `main.py` ripulito: lifespan invece di `on_event`, CORS da `BACKEND_CORS_ORIGIN`, `logging.basicConfig` una volta sola, **security headers attivati** — *concetti: cos'è il lifespan e perché ha sostituito gli event handler; cosa fa ciascuno dei security header oggi commentati (CSP, `X-Frame-Options`, `nosniff`, le tre policy Cross-Origin) e quali di essi hai già nella nota sull'auth; perché `basicConfig` chiamato due volte è un problema silenzioso* — *`curl -I` mostra CSP, `X-Frame-Options` e `X-Content-Type-Options`; l'app parte e si spegne senza warning di deprecazione*
-- [ ] **0.6** 🟡 **Migrazione a React 19** — *concetti: cosa cambia da 18, cosa si rompe, React Compiler* — *`npm ls react` dice 19.x; `tsc --noEmit` pulito; l'app parte senza warning in console*
+- [x] **0.6** 🟡 **Migrazione a React 19**, **React Compiler attivato** — *concetti: cosa cambia da 18, cosa si rompe, React Compiler* — *`npm ls react` dice 19.x; `tsc --noEmit` pulito; l'app parte senza warning in console*
 - [ ] **0.7** 🟢 tsconfig: aggiunti `noUncheckedIndexedAccess` e `exactOptionalPropertyTypes` — *`tsc --noEmit` pulito dopo le correzioni che i due flag fanno emergere*
 - [ ] **0.8** 🟢 ESLint + Vitest + RTL sul frontend, ruff + pyright sul backend — *i quattro comandi girano e sono verdi; import di routing unificati su `react-router`, `react-router-dom` rimosso*
 - [ ] **0.9** 🟢 **Rimozione di Redux dal progetto**: via `@reduxjs/toolkit`, `react-redux`, il `Provider` in `main.tsx` e la cartella `src/store/` — *da saper riassumere in due frasi: è una decisione da difendere in colloquio* — *`npm ls` non elenca più i due pacchetti né `redux` transitivo; l'app parte e naviga; `tsc --noEmit` pulito*

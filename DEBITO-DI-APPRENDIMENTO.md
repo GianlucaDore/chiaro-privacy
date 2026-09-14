@@ -67,6 +67,24 @@ bloccanti per la chiusura di un passo: sono qui perché vengano rilette.
 Ogni voce riporta la domanda, la risposta data e la correzione. Le correzioni sono brevi per
 scelta: dove il concetto richiede più spazio c'è il link a una risorsa che lo spiega.
 
+### 0.6 · Domanda 4 — Chi emette l'errore sui tipi di React · ⭐⭐☆☆☆
+
+**Domanda.** `react` e `@types/react` sono due pacchetti distinti. Se aggiorni solo il primo,
+chi emette l'errore, e **quando** — mentre scrivi nell'editor, mentre compili, o mentre l'app
+gira nel browser?
+
+**Risposta data.** Dipende da cosa si scrive nell'editor; il mismatch «verrà segnalato dal
+secondo quando si scrive nell'editor».
+
+**Correzione.** L'errore lo emette **`tsc`**, non `@types/react`: un pacchetto di tipi è un
+file di dichiarazioni, non un programma che esegue controlli. E i momenti sono **due su tre**:
+nell'editor, dove gira un server TypeScript, **e in compilazione**, perché `npm run typecheck`
+e il `tsc -b` della build sono lo stesso controllo. Nel browser non compare **niente**, perché
+i tipi non esistono a runtime — ed è proprio questo il sintomo che inganna: l'app gira e `tsc`
+protesta, quindi il guasto si cerca nel posto sbagliato.
+
+📄 [TypeScript — Type Declarations](https://www.typescriptlang.org/docs/handbook/2/type-declarations.html)
+
 ### 0.4 · Domanda 1 — `Pipfile` contro `Pipfile.lock` · ⭐⭐☆☆☆
 
 **Domanda.** Qual è la differenza fra il `Pipfile` e il `Pipfile.lock`, e perché entrambi
