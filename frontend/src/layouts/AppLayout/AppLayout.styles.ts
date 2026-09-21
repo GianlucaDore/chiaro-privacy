@@ -1,6 +1,6 @@
 import { type SxProps, type Theme } from '@mui/material/styles'
 
-export const layoutSx: Record<string, SxProps<Theme>> = {
+export const layoutSx = {
   appBar: {
     borderBottom: '1px solid',
     borderBottomColor: 'divider'
@@ -25,4 +25,4 @@ export const layoutSx: Record<string, SxProps<Theme>> = {
         cursor: "pointer"
     }
   }
-}
+} satisfies Record<string, SxProps<Theme>>;
