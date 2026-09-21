@@ -97,8 +97,13 @@ def test_nessun_warning_di_deprecazione_all_avvio() -> None:
     il codice di uscita è diverso da zero.
     """
     esito = subprocess.run(
-        [sys.executable, "-W", "error::DeprecationWarning", "-c",
-         "import sys; sys.path.insert(0, '.'); import app.main"],
+        [
+            sys.executable,
+            "-W",
+            "error::DeprecationWarning",
+            "-c",
+            "import sys; sys.path.insert(0, '.'); import app.main",
+        ],
         cwd=get_backend_root(),
         capture_output=True,
         text=True,
@@ -107,8 +112,7 @@ def test_nessun_warning_di_deprecazione_all_avvio() -> None:
     )
 
     assert esito.returncode == 0, (
-        "l'avvio produce un warning di deprecazione:\n"
-        + esito.stderr.strip()[-600:]
+        "l'avvio produce un warning di deprecazione:\n" + esito.stderr.strip()[-600:]
     )
 
 

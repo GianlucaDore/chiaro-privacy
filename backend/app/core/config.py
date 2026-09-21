@@ -24,8 +24,7 @@ def risali_fino_al_marcatore(partenza: Path, marcatore: str = MARCATORE_RADICE) 
         if (candidato / marcatore).is_file():
             return candidato
     raise RuntimeError(
-        f"Radice del backend non trovata: nessun '{marcatore}' "
-        f"risalendo da {partenza}"
+        f"Radice del backend non trovata: nessun '{marcatore}' risalendo da {partenza}"
     )
 
 
@@ -43,28 +42,29 @@ def get_backend_root() -> Path:
 
 DOTENV = get_backend_root() / ".env"
 
+
 class Env(Enum):
-	DEV = "DEV"
-	TEST = "TEST"
-	PROD = "PROD"
+    DEV = "DEV"
+    TEST = "TEST"
+    PROD = "PROD"
 
 
 class Settings(BaseSettings):
-    
-	model_config = SettingsConfigDict(env_file=DOTENV, env_file_encoding="utf-8", case_sensitive= True, extra="ignore")
- 
-	ENV: Env = Env(os.getenv('ENV', 'DEV'))
+    model_config = SettingsConfigDict(
+        env_file=DOTENV, env_file_encoding="utf-8", case_sensitive=True, extra="ignore"
+    )
 
-	PROJECT_NAME: str = "chiaro-privacy"
+    ENV: Env = Env(os.getenv("ENV", "DEV"))
 
-	API_PREFIX: str = "/api"
+    PROJECT_NAME: str = "chiaro-privacy"
 
-    # Dichiarare variabili d'ambiente dall'env file nella forma: VARIABLE_NAME = os.getenv("VARIABLE_NAME_IN_ENV_FILE")
-	# es.: INTERCENTER_ENDPOINT: str = os.getenv('INTERCENTER_ENDPOINT')
-	
+    API_PREFIX: str = "/api"
 
-	BACKEND_CORS_ORIGIN: str | AnyHttpUrl = Field(default='', alias='BACKEND_CORS_ORIGIN')
+    # Dichiarare variabili d'ambiente dall'env file nella forma:
+    # VARIABLE_NAME = os.getenv("VARIABLE_NAME_IN_ENV_FILE")
+    # es.: INTERCENTER_ENDPOINT: str = os.getenv('INTERCENTER_ENDPOINT')
 
+    BACKEND_CORS_ORIGIN: str | AnyHttpUrl = Field(default="", alias="BACKEND_CORS_ORIGIN")
 
 
 settings = Settings()

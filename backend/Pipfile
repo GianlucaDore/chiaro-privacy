@@ -42,6 +42,9 @@ prod = "uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 4"
 #           `pytest tests/` esegue TUTTI i tests nella folder `tests/`
 test = "pytest tests/"
 ruff = "ruff check"
+# `ruff format` impagina; `ruff check` segnala. Sono due lavori distinti
+#           dello stesso programma, e vanno lanciati entrambi.
+format = "ruff format"
 pyright = "pyright app/"
 
 [requires]
