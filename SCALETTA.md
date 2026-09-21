@@ -1,6 +1,6 @@
 # SCALETTA — Chiaro
 
-**67 passi in 7 fasi, più un backlog di 8.** È la spina dorsale del progetto e la fonte di verità unica
+**70 passi in 7 fasi, più un backlog di 8.** È la spina dorsale del progetto e la fonte di verità unica
 sull'avanzamento: il passo corrente è **il primo non spuntato**.
 
 ## Come si usa
@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 8 / 67** — ultimo completato: **0.7** · corrente: **0.8**
+**Avanzamento: 9 / 70** — ultimo completato: **0.8a** · corrente: **0.8b**
 
 ---
 
@@ -37,7 +37,10 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 - [x] **0.5** 🔴 `main.py` ripulito: lifespan invece di `on_event`, CORS da `BACKEND_CORS_ORIGIN`, `logging.basicConfig` una volta sola, **security headers attivati** — *concetti: cos'è il lifespan e perché ha sostituito gli event handler; cosa fa ciascuno dei security header oggi commentati (CSP, `X-Frame-Options`, `nosniff`, le tre policy Cross-Origin) e quali di essi hai già nella nota sull'auth; perché `basicConfig` chiamato due volte è un problema silenzioso* — *`curl -I` mostra CSP, `X-Frame-Options` e `X-Content-Type-Options`; l'app parte e si spegne senza warning di deprecazione*
 - [x] **0.6** 🟡 **Migrazione a React 19**, **React Compiler attivato** — *concetti: cosa cambia da 18, cosa si rompe, React Compiler* — *`npm ls react` dice 19.x; `tsc --noEmit` pulito; l'app parte senza warning in console*
 - [x] **0.7** 🟢 tsconfig: aggiunti `noUncheckedIndexedAccess` e `exactOptionalPropertyTypes`, **corretto lo script `typecheck` che controllava zero file** — *`tsc --noEmit` pulito dopo le correzioni che i due flag fanno emergere*
-- [ ] **0.8** 🟢 ESLint + Vitest + RTL sul frontend, ruff + pyright sul backend — *i quattro comandi girano e sono verdi; import di routing unificati su `react-router`, `react-router-dom` rimosso*
+- [x] **0.8a** 🟢 **ESLint sul frontend**: flat config, `typescript-eslint` con le regole che leggono i tipi, `eslint-plugin-react-hooks` 7 con le regole del React Compiler, script `lint` — *`npm run lint` gira e non segnala niente; spente le regole che duplicano i controlli già nel `tsconfig`*
+- [ ] **0.8b** 🟢 **Vitest + React Testing Library**: ambiente `jsdom`, `setupFiles`, script `test` e copertura — *`npm test` gira con almeno un test vero che asserisce sul DOM, non un placeholder; `npm run test:coverage` produce il report che al passo 0.13 leggerà Sonar*
+- [ ] **0.8c** 🟢 **`ruff` e `pyright` configurati sul backend**: oggi girano con i default e senza alcun file di configurazione — *`pipenv run ruff` e `pipenv run pyright` verdi con un set di regole dichiarato e versionato, non implicito*
+- [ ] **0.8d** 🟢 **Import di routing unificati su `react-router`**, `react-router-dom` rimosso dalle dipendenze — *`npm ls react-router-dom` non lo trova più; l'app naviga e `npm run lint && npm run typecheck && npm test` restano verdi*
 - [ ] **0.9** 🟢 **Rimozione di Redux dal progetto**: via `@reduxjs/toolkit`, `react-redux`, il `Provider` in `main.tsx` e la cartella `src/store/` — *da saper riassumere in due frasi: è una decisione da difendere in colloquio* — *`npm ls` non elenca più i due pacchetti né `redux` transitivo; l'app parte e naviga; `tsc --noEmit` pulito*
 - [ ] **0.10** 🟢 `.vscode/extensions.json`: SonarQube, ESLint, Python; rimosso `Vue.volar` — *aprendo la cartella, VSCode propone le tre estensioni giuste*
 - [ ] **0.11** 🔴 **I due Dockerfile li scrivi tu.** Claude fornisce **solo l'ossatura commentata** — le fasi, l'ordine dei layer, i punti dove va cosa — poi li scrivi da zero; il `docker-compose.yml` resta delegabile — *concetti: perché l'ordine delle istruzioni determina la cache dei layer; perché si copiano prima i file di dipendenza e solo dopo il codice; cos'è una build multi-stage e perché il frontend ne ha bisogno (si compila con Node, si serve con nginx); `CMD` contro `ENTRYPOINT`; perché non si gira come root; a cosa serve `.dockerignore`* — *`docker compose up` da clone pulito serve l'app; e la prova che hai capito la cache: **modificando una riga di codice applicativo e ricostruendo, le dipendenze non vengono reinstallate** (verificabile dall'output del build e con `docker history`)*
