@@ -7,7 +7,9 @@ export default function AppLayout() {
   const navigate = useNavigate();
 
   const handleTitleClick = (): void => {
-    navigate("/");
+    // navigate ritorna void | Promise<void>: `void` dichiara che il
+    // risultato non interessa, invece di lasciare una promise appesa.
+    void navigate("/");
   }
 
   return (
