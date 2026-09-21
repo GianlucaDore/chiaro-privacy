@@ -1,0 +1,60 @@
+# Configurazione degli strumenti di qualità del backend.
+#
+# Non dichiara un pacchetto e non serve a installare niente: le dipendenze
+# stanno nel Pipfile. Questo file esiste perché `ruff` e `pyright` leggono
+# entrambi le proprie impostazioni dalle sezioni [tool.*] di un pyproject.toml,
+# e averle in un posto solo evita due file di configurazione per due strumenti
+# che si usano sempre insieme.
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = [".venv", "__pycache__", "uploads"]
+
+[tool.ruff.lint]
+# ❗ L'insieme delle regole va dichiarato, non ereditato. Senza questa lista
+# ruff applica il proprio insieme predefinito, che oggi conta 413 regole e
+# cambia da una versione all'altra: il giorno in cui il lock viene aggiornato,
+# la pipeline può diventare rossa su codice che nessuno ha toccato.
+select = [
+    "E",     # pycodestyle: errori di stile che nascondono errori veri
+    "W",     # pycodestyle: avvisi, fra cui l'indentazione a tabulazioni
+    "F",     # pyflakes: import inutilizzati, nomi non definiti
+    "I",     # isort: ordine e raggruppamento degli import
+    "N",     # pep8-naming: convenzioni sui nomi
+    "UP",    # pyupgrade: sintassi superata per la versione di Python dichiarata
+    "B",     # bugbear: costrutti validi che sono quasi sempre bug
+    "C4",    # comprehensions: cicli scritti in modo inutilmente verboso
+    "SIM",   # simplify: condizioni e blocchi riducibili
+    "ASYNC", # trappole delle funzioni asincrone, che qui sono la norma
+    "S",     # bandit: pratiche insicure
+    "RUF",   # regole proprie di ruff
+]
+
+[tool.ruff.lint.per-file-ignores]
+# `assert` è il modo in cui si scrive un'asserzione in pytest, e S101 lo vieta
+# perché in produzione un assert può essere disattivato con -O. Nei test è il
+# suo uso legittimo.
+# S603 e S607 riguardano l'avvio di sottoprocessi: i test del passo 0.5 ne
+# lanciano di proposito, per avere un interprete nuovo con variabili d'ambiente
+# diverse.
+"tests/**" = ["S101", "S603", "S607"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pyright]
+include = ["app", "tests", "conftest.py"]
+exclude = ["**/__pycache__", ".venv", "uploads"]
+pythonVersion = "3.12"
+
+# `standard` è il livello intermedio fra `basic` e `strict`. La scelta è
+# argomentata nel briefing del passo: `strict` pretende annotazioni complete
+# anche dove il tipo è ovvio, e su un progetto che cresce per passi produrrebbe
+# rumore prima di produrre valore.
+typeCheckingMode = "standard"
+
+# Una libreria senza dichiarazioni di tipo va saputo, ma non deve fermare la
+# verifica: diventa un avviso e non un errore.
+reportMissingTypeStubs = "warning"
