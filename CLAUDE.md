@@ -73,9 +73,16 @@ soluzione**.
 
 Verde non significa invisibile. Scrivo il codice, poi:
 
-1. **Presento la diff** e la spiego **riga per riga**, non a blocchi.
-2. Segnalo le scelte che avrebbero potuto essere diverse e perché ho scelto così.
-3. Il passo **non si spunta** finché l'autore non ha rivisto tutto il codice.
+1. **Apro con il concetto, non con l'elenco dei file.** Che cosa è cambiato nel
+   comportamento del sistema e quale problema risolve, senza nominare percorsi né righe.
+   Un elenco ordinato per file risponde a «dove hai messo le mani» mentre la domanda è
+   «che cosa hai fatto».
+2. **Poi presento la diff** e la spiego **riga per riga**, non a blocchi.
+3. Segnalo le scelte che avrebbero potuto essere diverse e perché ho scelto così.
+4. Se il codice usa un **costrutto che l'autore non ha mai scritto di suo**, lo annoto in
+   `DEBITO-DI-APPRENDIMENTO.md` nella sezione dedicata: la zona verde assegna a me la
+   scrittura, non la comprensione.
+5. Il passo **non si spunta** finché l'autore non ha rivisto tutto il codice.
 
 ### 2.3 I marcatori nel codice — obbligatori in zona rossa e gialla
 

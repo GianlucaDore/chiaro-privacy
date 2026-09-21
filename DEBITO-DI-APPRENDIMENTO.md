@@ -3,12 +3,13 @@
 Registro di ciò che è rimasto indietro, tenuto perché una scorciatoia annotata è una scelta
 consapevole mentre una scorciatoia dimenticata è una deriva.
 
-Il file ha due sezioni, alimentate da due meccanismi distinti del `CLAUDE.md`:
+Il file ha tre sezioni, alimentate da tre meccanismi distinti:
 
 | Sezione | Da dove arriva |
 | --- | --- |
-| [Codice scritto in deroga](#codice-scritto-in-deroga) | La valvola di sfogo della sezione 9 |
+| [Codice scritto in deroga](#codice-scritto-in-deroga) | La valvola di sfogo della sezione 9 del `CLAUDE.md` |
 | [Risposte sotto le tre stelle](#risposte-sotto-le-tre-stelle) | La valutazione delle risposte della sezione 6.1 |
+| [Costrutti introdotti in zona verde](#costrutti-introdotti-in-zona-verde) | Il codice che scrivo io nei passi 🟢, quando usa qualcosa che l'autore non ha ancora scritto di suo |
 
 ---
 
@@ -124,3 +125,35 @@ L'esempio per `pyright` — `return "a"` in una funzione annotata `-> bool` — 
    una condizione costante è proprio ciò che `ruff` segnala.
 
 📄 [PEP 484 — Type Hints](https://peps.python.org/pep-0484/) · [Pydantic — perché usa le annotazioni](https://docs.pydantic.dev/latest/why/)
+
+---
+
+## Costrutti introdotti in zona verde
+
+Cose entrate nel codice perché le ho scritte io in un passo 🟢. Non sono scorciatoie — quei
+passi sono miei per assegnazione — ma restano costrutti che l'autore non ha ancora usato di
+propria mano, e che quindi non sono suoi finché non li riusa altrove.
+
+### 0.7 · `satisfies` · 15 settembre 2026
+
+**Cos'è.** Un operatore di TypeScript, dalla 4.9, che **verifica** che un valore rispetti un
+tipo senza **imporglielo**. La differenza con l'annotazione `:` è cosa il compilatore ricorda
+dopo il controllo.
+
+| Come si scrive | Viene controllato? | Cosa TypeScript ricorda |
+| --- | --- | --- |
+| `const x = valore` | no | tutto |
+| `const x: T = valore` | sì | solo `T` |
+| `const x = valore satisfies T` | sì | tutto |
+
+**Dov'è nel progetto.** Nel dizionario degli stili del layout, dove l'annotazione
+`Record<string, SxProps<Theme>>` cancellava il fatto che le chiavi fossero cinque e note.
+Con `satisfies` il vincolo viene comunque verificato, ma le chiavi restano quelle esatte —
+quindi un refuso non compila e l'accesso non produce più un `| undefined`.
+
+**Cosa resta da capire.** Quando l'annotazione è la scelta giusta, perché non sempre
+`satisfies` è meglio: dove serve **vincolarsi a un contratto** e non far dipendere chi usa il
+valore dalle sue specificità — il tipo di ritorno pubblico di una funzione, una variabile da
+riassegnare — l'annotazione è corretta proprio perché dimentica.
+
+📄 [TypeScript 4.9 — l'operatore `satisfies`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator)
