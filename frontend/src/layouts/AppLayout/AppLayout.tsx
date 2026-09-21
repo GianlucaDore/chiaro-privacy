@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, Typography, Container, Box } from '@mui/material'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router'
 import { layoutSx as sx } from './AppLayout.styles';
 
 export default function AppLayout() {
