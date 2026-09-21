@@ -26,7 +26,10 @@ più costoso, così il primo che fallisce è anche quello che spiega meglio il p
 | 0 | `npm install` | solo se `package.json` è cambiato, o dopo un `git pull` | le dipendenze dichiarate sono quelle installate |
 | 1 | `npm run typecheck` | sempre | i tipi sono coerenti |
 | 2 | `npm run lint` | sempre | il codice è sensato, non solo valido |
-| 3 | `npm run build` | prima di una pull request | il bundler regge, e la compilazione di produzione passa |
+| 3 | `npm test` | sempre | la suite Vitest è verde |
+| 4 | `npm run build` | prima di una pull request | il bundler regge, e la compilazione di produzione passa |
+| — | `npm run test:watch` | mentre si scrive un test | riesegue solo ciò che dipende dal file salvato |
+| — | `npm run test:coverage` | prima di una pull request | produce `coverage/lcov.info`, che al passo 0.13 leggerà Sonar |
 | — | `npm run dev` | per guardare con gli occhi | l'app gira su `localhost:5173` |
 
 **Perché `typecheck` prima di `lint`.** Il linter è configurato in modalità *type-aware*,
@@ -58,7 +61,7 @@ comando.
 ### Prima di aprire una pull request
 
 ```bash
-cd frontend && npm run typecheck && npm run lint && npm run build
+cd frontend && npm run typecheck && npm run lint && npm test && npm run build
 cd ../backend && pipenv run ruff && pipenv run pyright && pipenv run test
 ```
 
@@ -69,8 +72,10 @@ errori a cascata prodotti dalla stessa causa.
 
 ## Stato
 
-I comandi di test del frontend — `npm test` e la copertura — arrivano al passo **0.8b**; la
-configurazione dichiarata di `ruff` e `pyright` al passo **0.8c**, dove oggi i due strumenti
-girano con le impostazioni predefinite. La verifica automatica in pipeline arriva al passo
+L'infrastruttura di test del frontend c'è, ma **non esiste ancora nessun test**: `npm test`
+esce con successo dichiarando di non aver trovato file da eseguire. Il primo test di
+componente è il passo **3.2b**, quando ci sarà una pagina vera da interrogare, e da lì una
+suite vuota tornerà a essere un errore. La configurazione dichiarata di `ruff` e `pyright`
+arriva al passo **0.8c**, dove oggi i due strumenti girano con le impostazioni predefinite. La verifica automatica in pipeline arriva al passo
 **0.12**: fino a quel momento **nessuno di questi comandi blocca niente**, e lanciarli è una
 scelta di chi scrive.
