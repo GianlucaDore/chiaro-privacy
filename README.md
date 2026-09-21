@@ -46,6 +46,7 @@ in locale non è un'app che compila.
 | :---: | --- | --- | --- |
 | 0 | `pipenv install --dev` | solo se il `Pipfile` è cambiato | le dipendenze, **comprese quelle di sviluppo**, sono installate |
 | 1 | `pipenv run ruff` | sempre | nessuna imprecisione logica |
+| — | `pipenv run format` | prima di committare | impagina il codice in forma canonica |
 | 2 | `pipenv run pyright` | sempre | le annotazioni di tipo sono coerenti |
 | 3 | `pipenv run test` | sempre | la suite `pytest` è verde |
 | — | `pipenv run dev` | per guardare con gli occhi | uvicorn su `127.0.0.1:8000`, con `/docs` |
@@ -75,7 +76,8 @@ errori a cascata prodotti dalla stessa causa.
 L'infrastruttura di test del frontend c'è, ma **non esiste ancora nessun test**: `npm test`
 esce con successo dichiarando di non aver trovato file da eseguire. Il primo test di
 componente è il passo **3.2b**, quando ci sarà una pagina vera da interrogare, e da lì una
-suite vuota tornerà a essere un errore. La configurazione dichiarata di `ruff` e `pyright`
-arriva al passo **0.8c**, dove oggi i due strumenti girano con le impostazioni predefinite. La verifica automatica in pipeline arriva al passo
+suite vuota tornerà a essere un errore. Le regole di `ruff` e le impostazioni di `pyright` sono dichiarate in
+`backend/pyproject.toml`: prima erano quelle predefinite dello strumento, quindi dipendevano
+dalla versione installata. La verifica automatica in pipeline arriva al passo
 **0.12**: fino a quel momento **nessuno di questi comandi blocca niente**, e lanciarli è una
 scelta di chi scrive.

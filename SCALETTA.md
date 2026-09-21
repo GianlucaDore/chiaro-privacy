@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 11 / 71** — ultimo completato: **0.8b** · corrente: **0.8c**
+**Avanzamento: 12 / 71** — ultimo completato: **0.8c** · corrente: **0.9**
 
 ---
 
@@ -39,7 +39,7 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 - [x] **0.7** 🟢 tsconfig: aggiunti `noUncheckedIndexedAccess` e `exactOptionalPropertyTypes`, **corretto lo script `typecheck` che controllava zero file** — *`tsc --noEmit` pulito dopo le correzioni che i due flag fanno emergere*
 - [x] **0.8a** 🟢 **ESLint sul frontend**: flat config, `typescript-eslint` con le regole che leggono i tipi, `eslint-plugin-react-hooks` 7 con le regole del React Compiler, script `lint` — *`npm run lint` gira e non segnala niente; spente le regole che duplicano i controlli già nel `tsconfig`*
 - [x] **0.8b** 🟢 **Infrastruttura di test del frontend**: Vitest, `jsdom`, React Testing Library, `tests/setup.ts`, script `test`, `test:watch`, `test:coverage` — *i tre comandi girano e `coverage/lcov.info` viene prodotto. **Nessun test da scrivere qui**: il primo test di componente è il passo 3.2b*
-- [ ] **0.8c** 🟢 **`ruff` e `pyright` configurati sul backend**: oggi girano con i default e senza alcun file di configurazione — *`pipenv run ruff` e `pipenv run pyright` verdi con un set di regole dichiarato e versionato, non implicito*
+- [x] **0.8c** 🟢 **`ruff` e `pyright` configurati sul backend**: oggi girano con i default e senza alcun file di configurazione — *`pipenv run ruff` e `pipenv run pyright` verdi con un set di regole dichiarato e versionato, non implicito*
 - [x] **0.8d** 🟢 **Import di routing unificati su `react-router`**, `react-router-dom` rimosso dalle dipendenze — **eseguito prima del 0.8b**, che senza di esso non poteva passare — *`npm ls react-router-dom` non lo trova più; l'app naviga e `npm run lint && npm run typecheck && npm test` restano verdi*
 - [ ] **0.9** 🟢 **Rimozione di Redux dal progetto**: via `@reduxjs/toolkit`, `react-redux`, il `Provider` in `main.tsx` e la cartella `src/store/` — *da saper riassumere in due frasi: è una decisione da difendere in colloquio* — *`npm ls` non elenca più i due pacchetti né `redux` transitivo; l'app parte e naviga; `tsc --noEmit` pulito*
 - [ ] **0.10** 🟢 `.vscode/extensions.json`: SonarQube, ESLint, Python; rimosso `Vue.volar` — *aprendo la cartella, VSCode propone le tre estensioni giuste*
