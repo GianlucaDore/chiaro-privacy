@@ -22,6 +22,8 @@
 
     /* Linting / safety (conserviamo i tuoi flag) */
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
