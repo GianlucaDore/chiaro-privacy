@@ -1,3 +1,27 @@
+// Le estensioni che VSCode propone a chi apre questa cartella per la prima
+// volta. Non installa niente da solo: mostra una notifica e le elenca sotto
+// «Consigliate» nel pannello delle estensioni.
+//
+// Serve perche' le regole del progetto danno per scontato che certi strumenti
+// parlino dentro l'editor. Un linter che segnala solo quando si lancia un
+// comando arriva tardi: l'errore lo si scopre dopo aver scritto altre venti
+// righe sopra.
 {
-  "recommendations": ["Vue.volar"]
+  "recommendations": [
+    // SonarQube for IDE, il cui identificativo porta ancora il vecchio nome
+    // SonarLint. Da sola analizza solo i file aperti e non blocca niente: il
+    // filtro che blocca e' la Quality Gate in pipeline, al passo 0.13. Va poi
+    // messa in Connected Mode, altrimenti applica regole diverse da quelle
+    // della pipeline e si corregge cio' che nessuno chiede.
+    "SonarSource.sonarlint-vscode",
+
+    // Legge `frontend/eslint.config.js` e sottolinea nel file cio' che
+    // `npm run lint` direbbe alla fine.
+    "dbaeumer.vscode-eslint",
+
+    // Interprete, debugger e ambiente virtuale per il backend. Porta con se'
+    // Pylance, che e' lo stesso motore di pyright: i tipi che `pipenv run
+    // pyright` verifica in blocco compaiono mentre si scrive.
+    "ms-python.python"
+  ]
 }
