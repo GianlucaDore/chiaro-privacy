@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 12 / 71** — ultimo completato: **0.8c** · corrente: **0.9**
+**Avanzamento: 13 / 71** — ultimo completato: **0.9** · corrente: **0.10**
 
 ---
 
@@ -41,7 +41,7 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 - [x] **0.8b** 🟢 **Infrastruttura di test del frontend**: Vitest, `jsdom`, React Testing Library, `tests/setup.ts`, script `test`, `test:watch`, `test:coverage` — *i tre comandi girano e `coverage/lcov.info` viene prodotto. **Nessun test da scrivere qui**: il primo test di componente è il passo 3.2b*
 - [x] **0.8c** 🟢 **`ruff` e `pyright` configurati sul backend**: oggi girano con i default e senza alcun file di configurazione — *`pipenv run ruff` e `pipenv run pyright` verdi con un set di regole dichiarato e versionato, non implicito*
 - [x] **0.8d** 🟢 **Import di routing unificati su `react-router`**, `react-router-dom` rimosso dalle dipendenze — **eseguito prima del 0.8b**, che senza di esso non poteva passare — *`npm ls react-router-dom` non lo trova più; l'app naviga e `npm run lint && npm run typecheck && npm test` restano verdi*
-- [ ] **0.9** 🟢 **Rimozione di Redux dal progetto**: via `@reduxjs/toolkit`, `react-redux`, il `Provider` in `main.tsx` e la cartella `src/store/` — *da saper riassumere in due frasi: è una decisione da difendere in colloquio* — *`npm ls` non elenca più i due pacchetti né `redux` transitivo; l'app parte e naviga; `tsc --noEmit` pulito*
+- [x] **0.9** 🟢 **Rimozione di Redux dal progetto**: via `@reduxjs/toolkit`, `react-redux`, il `Provider` in `main.tsx` e la cartella `src/store/` — *da saper riassumere in due frasi: è una decisione da difendere in colloquio* — *`npm ls` non elenca più i due pacchetti né `redux` transitivo; l'app parte e naviga; `tsc --noEmit` pulito*
 - [ ] **0.10** 🟢 `.vscode/extensions.json`: SonarQube, ESLint, Python; rimosso `Vue.volar` — *aprendo la cartella, VSCode propone le tre estensioni giuste*
 - [ ] **0.11** 🔴 **I due Dockerfile li scrivi tu.** Claude fornisce **solo l'ossatura commentata** — le fasi, l'ordine dei layer, i punti dove va cosa — poi li scrivi da zero; il `docker-compose.yml` resta delegabile — *concetti: perché l'ordine delle istruzioni determina la cache dei layer; perché si copiano prima i file di dipendenza e solo dopo il codice; cos'è una build multi-stage e perché il frontend ne ha bisogno (si compila con Node, si serve con nginx); `CMD` contro `ENTRYPOINT`; perché non si gira come root; a cosa serve `.dockerignore`* — *`docker compose up` da clone pulito serve l'app; e la prova che hai capito la cache: **modificando una riga di codice applicativo e ricostruendo, le dipendenze non vengono reinstallate** (verificabile dall'output del build e con `docker history`)*
 - [ ] **0.12** 🟢 Pipeline GitHub Actions unica per i due progetti, su push e su PR — *verde al primo push, badge nel README*
