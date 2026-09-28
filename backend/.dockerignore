@@ -1,0 +1,16 @@
+# Cio' che NON viene spedito al motore di Docker quando parte la build, e quindi
+# non puo' finire in un COPY nemmeno per sbaglio. Il contesto e' backend/.
+# Docker non legge il .gitignore: e' un file distinto, con la stessa sintassi.
+
+__pycache__
+.pytest_cache
+.ruff_cache
+tests
+uploads
+conftest.py
+.venv
+Dockerfile
+.dockerignore
+pyproject.toml
+.python-version
+.env
