@@ -178,3 +178,26 @@ la pipeline eseguirebbe quel codice con l'accesso al repository. È lo stesso ra
 pinning esatto delle dipendenze, applicato a un altro anello della catena di fornitura.
 
 📄 [GitHub — Sintassi dei workflow](https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions) · [GitHub — Uso sicuro delle azioni di terzi](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions#using-third-party-actions)
+
+### 0.12b · Costruire una volta, promuovere · 28 ottobre 2026
+
+**Cos'è.** Il principio per cui un'immagine si **costruisce una sola volta**, su `develop`, e
+quando arriva in produzione non la si ricostruisce: le si aggiunge un'etichetta. Ciò che va
+su `main` è quindi la stessa immagine provata, bit per bit, e non una copia che potrebbe
+differire per una dipendenza scaricata in un altro momento.
+
+**Dov'è nel progetto.** Il job `immagini` di [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+Porta con sé quattro costrutti nuovi del workflow:
+
+| Costrutto | Cosa fa |
+| --- | --- |
+| `needs: [frontend, backend]` | il job aspetta che gli altri due siano verdi: l'equivalente degli `stages` di GitLab |
+| `strategy.matrix` | lo stesso job ripetuto per ogni valore, qui una volta per immagine |
+| `permissions:` sul job | dà la scrittura sui pacchetti solo a questo job, non a tutto il workflow |
+| `$GITHUB_OUTPUT` e `steps.<id>.outputs` | un passo calcola un valore, quelli successivi lo leggono |
+
+**Cosa resta da capire.** Perché per ritrovare l'immagine da promuovere si usa l'impronta
+dell'**albero** e non quella del **commit**: il merge di `develop` su `main` crea un commit
+nuovo, ma il contenuto dei file è identico, e l'albero descrive il contenuto.
+
+📄 [GitHub — Pubblicare immagini Docker](https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/publishing-docker-images) · [Git — Oggetti albero](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects)
