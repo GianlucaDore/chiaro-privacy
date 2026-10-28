@@ -95,7 +95,12 @@ ESEMPIO = get_backend_root() / ".env.example"
 # Oggi i settings non contengono segreti, quindi fa da segreto un campo
 # qualsiasi: il comportamento da verificare è lo stesso che avrà
 # ANTHROPIC_API_KEY quando arriverà.
-SEGRETO = "sk-ant-NON-DEVE-COMPARIRE"
+#
+# ❗ Deve restare corto. Nel testo dell'errore pydantic accorcia i valori lunghi
+# tenendone solo la parte finale ('...ant-NON-DEVE-COMPARIRE'): un controllo
+# sulla stringa intera non la troverebbe, e il test passerebbe nonostante la
+# fuga. È successo alla prima stesura di questo test.
+SEGRETO = "chiave-finta-42"
 
 
 def test_env_e_obbligatoria(monkeypatch: pytest.MonkeyPatch) -> None:
