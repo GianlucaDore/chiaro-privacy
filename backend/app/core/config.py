@@ -1,8 +1,7 @@
-import os
 from enum import Enum
 from pathlib import Path
 
-from pydantic import AnyHttpUrl, Field
+from pydantic import AnyHttpUrl, Field, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Il file che marca la radice del backend. Il Pipfile definisce le dipendenze
@@ -51,20 +50,44 @@ class Env(Enum):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=DOTENV, env_file_encoding="utf-8", case_sensitive=True, extra="ignore"
+        env_file=DOTENV,
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="ignore",
+        hide_input_in_errors=True,
     )
 
-    ENV: Env = Env(os.getenv("ENV", "DEV"))
+    ENV: Env
 
     PROJECT_NAME: str = "chiaro-privacy"
 
     API_PREFIX: str = "/api"
 
-    # Dichiarare variabili d'ambiente dall'env file nella forma:
-    # VARIABLE_NAME = os.getenv("VARIABLE_NAME_IN_ENV_FILE")
-    # es.: INTERCENTER_ENDPOINT: str = os.getenv('INTERCENTER_ENDPOINT')
-
+    # ❗ Il passo 1.2 è dedicato al CORS: questo campo, in questo passo, non si tocca.
     BACKEND_CORS_ORIGIN: str | AnyHttpUrl = Field(default="", alias="BACKEND_CORS_ORIGIN")
 
 
-settings = Settings()
+def carica_settings(env_file: Path | None = DOTENV) -> Settings:
+    """
+    Crea i settings. Se la configurazione non è valida, ferma l'avvio con un
+    messaggio che dice quali variabili correggere, senza riportarne i valori.
+
+    `env_file` esiste per i test: `None` vuol dire «non leggere nessun file .env».
+    """
+    try:
+        settings = Settings(_env_file=env_file)  # pyright: ignore[reportCallIssue]
+        return settings
+    except ValidationError as e:
+        error_message: str = "Configurazione dei settings non valida.\n"
+        for element in e.errors():
+            error_message += f"{element['loc'][0]}: {element['msg']}\n"
+        error_message += (
+            "Verificare che l'.env file fornito rispetti la struttura "
+            "del file di environment di esempio .env.example."
+        )
+        # Lancio SystemExit perché non c'è nessun Exception da catturare/gestire,
+        # se fallisco a istanziare i settings l'app si deve schiantare con quel messaggio.
+        raise SystemExit(error_message) from None
+
+
+settings = carica_settings()

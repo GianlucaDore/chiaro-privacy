@@ -108,7 +108,9 @@ def test_nessun_warning_di_deprecazione_all_avvio() -> None:
         capture_output=True,
         text=True,
         check=False,
-        env=_ambiente_base(),
+        # ENV è obbligatoria dal passo 1.1: senza, l'import si fermerebbe per la
+        # configurazione mancante, e il test fallirebbe per il motivo sbagliato.
+        env={**_ambiente_base(), "ENV": "TEST"},
     )
 
     assert esito.returncode == 0, (

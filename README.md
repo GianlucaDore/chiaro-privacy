@@ -86,6 +86,10 @@ in locale non è un'app che compila.
 esecuzione, e `pytest`, `ruff` e `pyright` risultano «comando non trovato» — l'errore non dice
 che manca il flag.
 
+**`pipenv run dev` vuole un `.env`.** Alcune variabili sono obbligatorie, e senza l'app si
+ferma all'avvio dicendo quale manca. La prima volta si copia l'esempio: `cp .env.example .env`
+(in PowerShell `Copy-Item .env.example .env`). I test non ne hanno bisogno.
+
 **Se pipenv annuncia di aver trovato un virtualenv già attivo**, sta usando quello di un altro
 progetto invece del proprio. Si neutralizza con `PIPENV_IGNORE_VIRTUALENVS=1` davanti al
 comando.
