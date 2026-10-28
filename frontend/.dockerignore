@@ -1,0 +1,12 @@
+# Cio' che NON viene spedito al motore di Docker quando parte la build, e quindi
+# non puo' finire in un COPY nemmeno per sbaglio. Il contesto e' frontend/.
+# Qui conta piu' che nel backend: il Dockerfile fa `COPY . .`, e senza queste
+# righe copierebbe il node_modules della tua macchina, compilato per Windows.
+# Docker non legge il .gitignore: e' un file distinto, con la stessa sintassi.
+
+coverage
+dist
+node_modules
+.env
+Dockerfile
+.dockerignore

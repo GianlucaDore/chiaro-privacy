@@ -1,0 +1,101 @@
+# =============================================================================
+# Chiaro - avvio dell'intero progetto con un comando.
+#
+#   docker compose up --build     costruisce e avvia tutto
+#   docker compose up --build backend    solo il backend, per diagnosticare
+#   docker compose logs -f backend       i log di un servizio
+#   docker compose down                  ferma e rimuove i container
+#   docker compose down -v               ...e cancella anche i volumi
+#
+# Nessuna chiave `version:` in cima: e' obsoleta da Compose v2 e oggi produce
+# solo un avviso.
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # Backend - FastAPI servito da uvicorn
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      # Il contesto di build: la cartella spedita al demone Docker. E' anche
+      # la cartella in cui deve stare il suo .dockerignore.
+      context: ./backend
+    # Il nome dell'immagine prodotta. Senza, Compose ne inventa uno derivato
+    # dal nome della cartella, e i comandi `docker history` e `docker images`
+    # del criterio diventano scomodi da scrivere.
+    image: chiaro-backend
+    container_name: chiaro-backend
+    ports:
+      # <porta sulla tua macchina>:<porta dentro il container>. E' questa riga
+      # a pubblicare davvero la porta: l'EXPOSE nel Dockerfile e' solo
+      # documentazione.
+      - "8000:8000"
+    environment:
+      # La configurazione dell'applicazione legge queste variabili prima di
+      # cercare il file .env.
+      ENV: DEV
+      # Da dove il browser puo' chiamare questa API. Il frontend gira su 8081
+      # (vedi sotto), e senza questa riga le chiamate dal browser verrebbero
+      # bloccate dalla politica di origine incrociata.
+      BACKEND_CORS_ORIGIN: "http://localhost:8081"
+    env_file:
+      # Il file dei segreti, quando esiste. `required: false` evita che
+      # l'assenza del file fermi tutto: oggi non c'e' e il progetto parte lo
+      # stesso.
+      - path: ./backend/.env
+        required: false
+    volumes:
+      # ❗ Un volume e' una cartella che vive FUORI dal container e viene
+      # innestata dentro. Serve perche' il filesystem di un container e'
+      # usa e getta: `docker compose up --build` sostituisce il container con
+      # uno nuovo, e tutto cio' che il vecchio aveva scritto sparisce.
+      # Qui dentro finiranno i documenti caricati dagli utenti, e piu' avanti
+      # il file SQLite.
+      - uploads:/app/uploads
+    healthcheck:
+      # Il controllo usa python invece di curl perche' python c'e' di sicuro
+      # nell'immagine, mentre curl in un'immagine -slim non e' installato.
+      # Chiama la propria porta dall'interno: se uvicorn fosse legato a
+      # 127.0.0.1 questo controllo passerebbe lo stesso, ed e' il motivo per
+      # cui non sostituisce la prova con il browser.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/docs')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      # Finestra iniziale in cui un fallimento non conta: l'applicazione ha il
+      # tempo di avviarsi senza essere dichiarata malata.
+      start_period: 20s
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Frontend - build statica servita da nginx
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+    image: chiaro-frontend
+    container_name: chiaro-frontend
+    ports:
+      # La 8080 su questa macchina e' occupata da un altro progetto, quindi il
+      # frontend esce sulla 8081. Il numero a destra e' la porta interna di
+      # nginx e resta 80: cambierebbe solo passando alla variante senza
+      # privilegi, e in quel caso va allineato il `listen` di nginx.conf.
+      - "8081:80"
+    depends_on:
+      backend:
+        # Non parte finche' il backend non risponde al proprio healthcheck.
+        # Senza questa condizione, `depends_on` aspetta solo che il container
+        # sia stato avviato - non che l'applicazione dentro sia pronta.
+        condition: service_healthy
+    restart: unless-stopped
+
+# ❗ Fuori scopo per il passo 0.11: il frontend non chiama ancora il backend,
+# perche' non ci sono endpoint. Quando ce ne saranno, andra' deciso se il
+# browser parla direttamente con :8000 - ed e' il motivo per cui il CORS qui
+# sopra e' gia' impostato - oppure se nginx inoltra /api al servizio backend
+# lungo la rete interna di Compose, dove i servizi si raggiungono per nome.
+# E' una decisione che appartiene al passo in cui nasce la prima chiamata.
+
+volumes:
+  uploads:

@@ -13,6 +13,26 @@ Il piano di lavoro è in [`SCALETTA.md`](SCALETTA.md), le regole di collaborazio
 
 ---
 
+## Avviare il progetto
+
+L'unica cosa che serve è Docker.
+
+```bash
+docker compose up --build
+```
+
+| | Indirizzo |
+| --- | --- |
+| Applicazione | http://localhost:8081 |
+| API, documentazione interattiva | http://localhost:8000/docs |
+
+`docker compose down` ferma tutto; con `-v` cancella anche i documenti caricati, che vivono in un
+volume e sopravvivono alle ricostruzioni.
+
+I comandi qui sotto servono solo a chi sviluppa, e richiedono Node e Python installati.
+
+---
+
 ## Comandi
 
 Ogni riga va lanciata **dentro la cartella del progetto** che si sta toccando, non dalla
