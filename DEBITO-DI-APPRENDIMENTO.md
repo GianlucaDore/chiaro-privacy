@@ -157,3 +157,24 @@ valore dalle sue specificità — il tipo di ritorno pubblico di una funzione, u
 riassegnare — l'annotazione è corretta proprio perché dimentica.
 
 📄 [TypeScript 4.9 — l'operatore `satisfies`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator)
+
+### 0.12 · Il workflow di GitHub Actions · 28 ottobre 2026
+
+**Cos'è.** Un file YAML in `.github/workflows/` che GitHub esegue da solo quando succede
+qualcosa nel repository. La struttura ha tre livelli, ed è tutto ciò che serve per leggerlo:
+
+| Livello | Cosa dichiara |
+| --- | --- |
+| `on:` | **quando** parte: a ogni push, a ogni pull request |
+| `jobs:` | **cosa** gira, ognuno su una macchina virtuale propria e in parallelo agli altri |
+| `steps:` | **in che ordine**, dentro un job: o un'azione già pronta (`uses:`) o un comando (`run:`) |
+
+**Dov'è nel progetto.** [`.github/workflows/ci.yml`](.github/workflows/ci.yml): due job,
+frontend e backend, che eseguono gli stessi controlli del README.
+
+**Cosa resta da capire.** Perché le azioni di terzi sono fissate all'**impronta di un commit**
+e non all'etichetta `v7`: un'etichetta può essere spostata dal suo autore su codice diverso, e
+la pipeline eseguirebbe quel codice con l'accesso al repository. È lo stesso ragionamento del
+pinning esatto delle dipendenze, applicato a un altro anello della catena di fornitura.
+
+📄 [GitHub — Sintassi dei workflow](https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions) · [GitHub — Uso sicuro delle azioni di terzi](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions#using-third-party-actions)
