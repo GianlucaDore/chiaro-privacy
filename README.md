@@ -115,5 +115,6 @@ stabili si aggiunge l'analisi di **SonarQube Cloud**: se la Quality Gate non pas
 diventa rosso. La copertura è esclusa dalla gate fino ai passi 1.9 e 4.9, quando verrà
 generata dai test e importata.
 
-**Un controllo rosso non impedisce ancora il merge**: per quello i job vanno dichiarati
-obbligatori nelle regole del branch.
+Su `develop` e su `main` tre controlli sono **obbligatori**: Frontend, Backend e il verdetto
+della Quality Gate pubblicato da SonarQube Cloud. Con uno dei tre rosso, la pull request non
+si può mergiare.
