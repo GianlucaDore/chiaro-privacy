@@ -21,10 +21,15 @@ services:
       # Il contesto di build: la cartella spedita al demone Docker. E' anche
       # la cartella in cui deve stare il suo .dockerignore.
       context: ./backend
-    # Il nome dell'immagine prodotta. Senza, Compose ne inventa uno derivato
-    # dal nome della cartella, e i comandi `docker history` e `docker images`
-    # del criterio diventano scomodi da scrivere.
-    image: chiaro-backend
+    # Il nome dell'immagine, ed e' quello con cui la pipeline la pubblica su
+    # GitHub Container Registry. Avere `build` e `image` insieme permette due
+    # usi dello stesso file:
+    #   docker compose pull && docker compose up   scarica l'immagine pubblicata
+    #                                              e la avvia, senza compilare
+    #   docker compose up --build                  la costruisce dal sorgente e
+    #                                              le da' questo stesso nome
+    # `:test` e' l'etichetta di develop; `:latest` nasce al primo rilascio su main.
+    image: ghcr.io/gianlucadore/chiaro-backend:test
     container_name: chiaro-backend
     ports:
       # <porta sulla tua macchina>:<porta dentro il container>. E' questa riga
@@ -74,7 +79,8 @@ services:
   frontend:
     build:
       context: ./frontend
-    image: chiaro-frontend
+    # Stesso schema del backend.
+    image: ghcr.io/gianlucadore/chiaro-frontend:test
     container_name: chiaro-frontend
     ports:
       # La 8080 su questa macchina e' occupata da un altro progetto, quindi il

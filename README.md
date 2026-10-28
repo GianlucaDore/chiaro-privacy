@@ -17,9 +17,13 @@ Il piano di lavoro è in [`SCALETTA.md`](SCALETTA.md), le regole di collaborazio
 
 ## Avviare il progetto
 
-L'unica cosa che serve è Docker.
+L'unica cosa che serve è Docker. Due strade, con lo stesso risultato:
 
 ```bash
+# le immagini già costruite dalla pipeline: nessuna compilazione
+docker compose pull && docker compose up
+
+# oppure costruite qui, dal sorgente
 docker compose up --build
 ```
 
@@ -27,6 +31,11 @@ docker compose up --build
 | --- | --- |
 | Applicazione | http://localhost:8081 |
 | API, documentazione interattiva | http://localhost:8000/docs |
+
+**Non esiste un ambiente pubblico in esecuzione.** Le immagini sono pubblicate su GitHub
+Container Registry, ma girano soltanto sulla macchina di chi le scarica. `:test` è l'ultima
+versione verificata di `develop`; `:latest` arriverà con il primo rilascio su `main`, e sarà
+la stessa immagine promossa, non ricostruita.
 
 `docker compose down` ferma tutto; con `-v` cancella anche i documenti caricati, che vivono in un
 volume e sopravvivono alle ricostruzioni.
