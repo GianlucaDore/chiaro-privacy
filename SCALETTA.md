@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 18 / 71** — ultimo completato: **0.13** · corrente: **0.14**
+**Avanzamento: 19 / 71** — ultimo completato: **0.14** · corrente: **1.1**
 
 ---
 
@@ -47,7 +47,7 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 - [x] **0.12** 🟢 Pipeline GitHub Actions unica per i due progetti, su push e su PR — *verde al primo push, badge nel README*
 - [x] **0.12b** 🟢 Le due immagini pubblicate su **GitHub Container Registry**, con tag per branch: `develop` → `:test`, `main` → `:latest` — *concetti: perché un'immagine si costruisce una volta e si promuove, invece di ricostruirla per ogni ambiente* — *`docker pull ghcr.io/gianlucadore/chiaro-*:test` da una macchina pulita scarica l'immagine e `docker compose up` la serve senza compilare niente; il README dichiara che non esiste un ambiente pubblico in esecuzione*
 - [x] **0.13** 🟢 SonarQube Cloud collegato: `sonar-project.properties`, step in pipeline, **Quality Gate che blocca** — *un code smell introdotto ad arte rende rosso il job; rimosso, torna verde*
-- [ ] **0.14** 🟡 **Connected Mode** dell'estensione verso il progetto Cloud — *concetti: perché senza di essa editor e CI dicono cose diverse* — *la stessa violazione compare nell'editor e nel job di CI*
+- [x] **0.14** 🟡 **Connected Mode** dell'estensione verso il progetto Cloud — *concetti: perché senza di essa editor e CI dicono cose diverse* — *la stessa violazione compare nell'editor e nel job di CI*
 
 ---
 
