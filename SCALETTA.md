@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 19 / 71** — ultimo completato: **0.14** · corrente: **1.1**
+**Avanzamento: 20 / 71** — ultimo completato: **1.1** · corrente: **1.2**
 
 ---
 
@@ -57,7 +57,7 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 come parla col database, come consegna una connessione a ogni richiesta, come risponde quando
 qualcosa va storto.*
 
-- [ ] **1.1** 🟡 Completare i settings: variabili obbligatorie, `.env.example` aggiornato — *l'app fallisce al boot con errore chiaro se manca una variabile obbligatoria*
+- [x] **1.1** 🟡 Completare i settings: variabili obbligatorie, `.env.example` aggiornato — *l'app fallisce al boot con errore chiaro se manca una variabile obbligatoria*
 - [ ] **1.2** 🔴 CORS capito, non copiato — *concetti: cosa apre esattamente, perché `allow_credentials: true` cambia le regole e vieta `*`* — *una richiesta con `Origin` non in lista viene rifiutata, verificabile con `curl -H "Origin: ..."`*
 - [ ] **1.3** 🔴 SQLAlchemy 2.0: engine, sessione, modelli dichiarativi, `create_all` — *concetti: differenza tra modello DB e schema API, perché non si espone mai il modello* — *la tabella `users` esiste e un test crea e rilegge una riga*
 - [ ] **1.4** 🔴 Dependency injection con `Depends`: una sessione per richiesta in `app/api/deps.py` — *concetti: ciclo di vita, perché non una sessione globale, cosa accade se non la chiudi* — *un test dimostra sessioni distinte per richiesta e chiusura garantita*
