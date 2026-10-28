@@ -126,6 +126,24 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 
 # --- Origini CORS ------------------------------------------------------------
+# ─── PASSO 1.2 · 🔴 · briefing docs/passi/1.2.md ─────────────────────────────
+# TODO(1.2/5) — l'app usa la politica di app/core/cors.py
+#   Da scrivere:
+#     - ORIGINI_CORS si ottiene chiamando leggi_origini() sul valore dei
+#       settings, al posto della list comprehension qui sotto;
+#     - dentro l'if, al posto di app.add_middleware(CORSMiddleware, ...),
+#       chiama aggiungi_cors() con l'app e le origini;
+#     - togli l'import di CORSMiddleware in cima al file, che resta
+#       inutilizzato (ruff F401), e aggiungi quello delle due funzioni.
+#   Perché: il blocco qui sotto viene da un template, e "*" in metodi e
+#     header vuol dire «tutto ciò che mi chiedono» (briefing 3).
+#   Trappola: l'ORDINE resta quello di oggi. aggiungi_cors() va chiamata DOPO
+#     app.add_middleware(SecurityHeadersMiddleware): registrato per ultimo, il
+#     CORS è il più esterno, e il commento qui sotto spiega perché conta.
+#   Trappola: i commenti di questo blocco parlano ancora della list
+#     comprehension: aggiornali con parole tue quando la togli.
+# Cancella questo cartello quando l'hai fatto.
+# ─────────────────────────────────────────────────────────────────────────────
 # BACKEND_CORS_ORIGIN e' un valore singolo o un elenco separato da virgole.
 # Se e' vuoto non si registra alcun CORSMiddleware: [""] sarebbe una lista che
 # non ammette niente ma che ha tutta l'aria di essere configurata.
