@@ -110,6 +110,10 @@ componente è il passo **3.2b**, quando ci sarà una pagina vera da interrogare,
 suite vuota tornerà a essere un errore. Le regole di `ruff` e le impostazioni di `pyright` sono dichiarate in
 `backend/pyproject.toml`: prima erano quelle predefinite dello strumento, quindi dipendevano
 dalla versione installata. Gli stessi controlli girano in pipeline a ogni push e a ogni pull request, e il badge in
-cima mostra l'esito sull'ultimo commit di `develop`. **La pipeline segnala ma non blocca
-ancora**: un merge con i controlli rossi resta possibile finché il branch non dichiara i
-controlli come obbligatori.
+cima mostra l'esito sull'ultimo commit di `develop`. Sulle pull request e sui due branch
+stabili si aggiunge l'analisi di **SonarQube Cloud**: se la Quality Gate non passa, il job
+diventa rosso. La copertura è esclusa dalla gate fino ai passi 1.9 e 4.9, quando verrà
+generata dai test e importata.
+
+**Un controllo rosso non impedisce ancora il merge**: per quello i job vanno dichiarati
+obbligatori nelle regole del branch.
