@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 16 / 71** — ultimo completato: **0.12** · corrente: **0.12b**
+**Avanzamento: 17 / 71** — ultimo completato: **0.12b** · corrente: **0.13**
 
 ---
 
@@ -45,7 +45,7 @@ aggiunge ciò che manca a entrambi (test, linter, Docker, CI, Sonar).*
 - [x] **0.10** 🟢 `.vscode/extensions.json`: SonarQube, ESLint, Python; rimosso `Vue.volar` — *aprendo la cartella, VSCode propone le tre estensioni giuste*
 - [x] **0.11** 🔴 **I due Dockerfile li scrivi tu.** Claude fornisce **solo l'ossatura commentata** — le fasi, l'ordine dei layer, i punti dove va cosa — poi li scrivi da zero; il `docker-compose.yml` resta delegabile — *concetti: perché l'ordine delle istruzioni determina la cache dei layer; perché si copiano prima i file di dipendenza e solo dopo il codice; cos'è una build multi-stage e perché il frontend ne ha bisogno (si compila con Node, si serve con nginx); `CMD` contro `ENTRYPOINT`; perché non si gira come root; a cosa serve `.dockerignore`* — *`docker compose up` da clone pulito serve l'app; e la prova che hai capito la cache: **modificando una riga di codice applicativo e ricostruendo, le dipendenze non vengono reinstallate** (verificabile dall'output del build e con `docker history`)*
 - [x] **0.12** 🟢 Pipeline GitHub Actions unica per i due progetti, su push e su PR — *verde al primo push, badge nel README*
-- [ ] **0.12b** 🟢 Le due immagini pubblicate su **GitHub Container Registry**, con tag per branch: `develop` → `:test`, `main` → `:latest` — *concetti: perché un'immagine si costruisce una volta e si promuove, invece di ricostruirla per ogni ambiente* — *`docker pull ghcr.io/gianlucadore/chiaro-*:test` da una macchina pulita scarica l'immagine e `docker compose up` la serve senza compilare niente; il README dichiara che non esiste un ambiente pubblico in esecuzione*
+- [x] **0.12b** 🟢 Le due immagini pubblicate su **GitHub Container Registry**, con tag per branch: `develop` → `:test`, `main` → `:latest` — *concetti: perché un'immagine si costruisce una volta e si promuove, invece di ricostruirla per ogni ambiente* — *`docker pull ghcr.io/gianlucadore/chiaro-*:test` da una macchina pulita scarica l'immagine e `docker compose up` la serve senza compilare niente; il README dichiara che non esiste un ambiente pubblico in esecuzione*
 - [ ] **0.13** 🟢 SonarQube Cloud collegato: `sonar-project.properties`, step in pipeline, **Quality Gate che blocca** — *un code smell introdotto ad arte rende rosso il job; rimosso, torna verde*
 - [ ] **0.14** 🟡 **Connected Mode** dell'estensione verso il progetto Cloud — *concetti: perché senza di essa editor e CI dicono cose diverse* — *la stessa violazione compare nell'editor e nel job di CI*
 
