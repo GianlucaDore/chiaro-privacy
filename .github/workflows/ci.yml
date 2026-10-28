@@ -118,3 +118,82 @@ jobs:
 
       - name: Test
         run: pipenv run test
+
+  # Pubblica le due immagini su GitHub Container Registry. Una volta sola.
+  #
+  # Su develop si costruiscono e si etichettano `:test`. Su main NON si
+  # ricostruisce niente: si prende l'immagine gia' costruita e verificata su
+  # develop e le si da' anche l'etichetta `:latest`. Cosi' in produzione va
+  # esattamente cio' che e' stato provato, bit per bit, e non una sua copia
+  # ricostruita che potrebbe differire.
+  immagini:
+    name: Immagine ${{ matrix.servizio }}
+    # Parte solo se i due job di controllo sono verdi: si pubblica soltanto
+    # cio' che ha passato i controlli.
+    needs: [frontend, backend]
+    # Solo sui push a develop e a main. Sui branch di lavoro e sulle pull
+    # request non si pubblica niente.
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    # L'unico job che scrive, e scrive soltanto nel registro delle immagini.
+    permissions:
+      contents: read
+      packages: write
+    # Lo stesso job due volte, una per immagine, in parallelo.
+    strategy:
+      matrix:
+        servizio: [backend, frontend]
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Il nome dell'immagine va in minuscolo, e il proprietario del repository
+      # non lo e': `,,` e' il modo di bash per convertire.
+      # L'albero e' l'impronta del CONTENUTO del repository. A differenza
+      # dell'impronta del commit, resta identica quando develop viene fuso su
+      # main, ed e' quello che permette di ritrovare l'immagine da promuovere.
+      - name: Nomi
+        id: nomi
+        run: |
+          echo "immagine=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/chiaro-${{ matrix.servizio }}" >> "$GITHUB_OUTPUT"
+          echo "albero=$(git rev-parse --short=12 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
+
+      # Il token che GitHub presta al job basta per scrivere nel registro: non
+      # serve nessun segreto creato a mano.
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # develop: si costruisce dallo stesso Dockerfile e con lo stesso contesto
+      # del compose, e si pubblica con due etichette. La cache dei layer viene
+      # conservata fra un run e l'altro, separata per immagine: e' lo stesso
+      # meccanismo del passo 0.11, che qui fa risparmiare minuti di CI.
+      # L'etichetta `source` collega l'immagine al repository su GitHub.
+      - name: Costruzione e pubblicazione
+        if: github.ref == 'refs/heads/develop'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ${{ matrix.servizio }}
+          push: true
+          tags: |
+            ${{ steps.nomi.outputs.immagine }}:test
+            ${{ steps.nomi.outputs.immagine }}:albero-${{ steps.nomi.outputs.albero }}
+          labels: org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          cache-from: type=gha,scope=${{ matrix.servizio }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.servizio }}
+
+      # main: nessuna costruzione. Si aggiunge l'etichetta `:latest` all'immagine
+      # che develop ha gia' pubblicato con lo stesso albero. Se non esiste, il
+      # passo fallisce: si puo' promuovere solo cio' che e' stato costruito e
+      # verificato.
+      - name: Promozione
+        if: github.ref == 'refs/heads/main'
+        run: >-
+          docker buildx imagetools create
+          --tag ${{ steps.nomi.outputs.immagine }}:latest
+          ${{ steps.nomi.outputs.immagine }}:albero-${{ steps.nomi.outputs.albero }}
