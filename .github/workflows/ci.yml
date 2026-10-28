@@ -119,6 +119,32 @@ jobs:
       - name: Test
         run: pipenv run test
 
+  # Analisi di SonarQube Cloud, con la Quality Gate che decide se il job e'
+  # verde o rosso. La configurazione sta in sonar-project.properties.
+  sonar:
+    name: SonarQube
+    # Sulle pull request, dove Sonar giudica soltanto le righe cambiate, e sui
+    # due branch stabili. Non sui push ai branch di lavoro: li' Sonar
+    # confronterebbe il branch con main, e segnalerebbe come nuovo tutto cio'
+    # che main non ha ancora ricevuto.
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      # `fetch-depth: 0` scarica tutta la storia, non solo l'ultimo commit: a
+      # Sonar serve per capire quali righe sono nuove e chi le ha scritte.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      # Il token e' l'unico segreto: sta nei Secrets del repository su GitHub, e
+      # qui viene solo nominato. Per SonarQube Cloud non serve l'indirizzo del
+      # server, che invece servirebbe per un'installazione propria.
+      - uses: SonarSource/sonarqube-scan-action@4d1dc0c91ee400dcf8a6dddf2f705ac36542e304 # v8.4.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   # Pubblica le due immagini su GitHub Container Registry. Una volta sola.
   #
   # Su develop si costruiscono e si etichettano `:test`. Su main NON si
