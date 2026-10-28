@@ -92,9 +92,10 @@ def test_errore_esplicito_se_il_marcatore_manca(tmp_path: Path) -> None:
 ESEMPIO = get_backend_root() / ".env.example"
 
 # Un valore riconoscibile, che non deve mai comparire in un messaggio d'errore.
-# Oggi i settings non contengono segreti, quindi fa da segreto un campo
-# qualsiasi: il comportamento da verificare è lo stesso che avrà
-# ANTHROPIC_API_KEY quando arriverà.
+# Oggi i settings non contengono segreti, quindi fa da segreto PROJECT_NAME:
+# il comportamento da verificare è lo stesso che avrà ANTHROPIC_API_KEY quando
+# arriverà. Serve un campo SENZA validatori: un validatore che rifiuta il
+# valore lo nominerebbe nel proprio messaggio, e il test misurerebbe quello.
 #
 # ❗ Deve restare corto. Nel testo dell'errore pydantic accorcia i valori lunghi
 # tenendone solo la parte finale ('...ant-NON-DEVE-COMPARIRE'): un controllo
@@ -120,7 +121,7 @@ def test_l_errore_non_riporta_i_valori_letti(monkeypatch: pytest.MonkeyPatch) ->
     d'avvio proprio quando la configurazione è sbagliata.
     """
     monkeypatch.delenv("ENV", raising=False)
-    monkeypatch.setenv("BACKEND_CORS_ORIGIN", SEGRETO)
+    monkeypatch.setenv("PROJECT_NAME", SEGRETO)
 
     with pytest.raises(ValidationError) as info:
         Settings(_env_file=None)
@@ -151,7 +152,7 @@ def test_carica_settings_ferma_l_avvio_con_un_messaggio_chiaro(
     posto di chi la scrive.
     """
     monkeypatch.delenv("ENV", raising=False)
-    monkeypatch.setenv("BACKEND_CORS_ORIGIN", SEGRETO)
+    monkeypatch.setenv("PROJECT_NAME", SEGRETO)
 
     with pytest.raises((SystemExit, RuntimeError)) as info:
         carica_settings(env_file=None)
