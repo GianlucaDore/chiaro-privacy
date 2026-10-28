@@ -1,0 +1,120 @@
+# Pipeline di integrazione continua.
+#
+# A ogni push e a ogni pull request esegue sui due progetti gli stessi
+# controlli che il README chiede di lanciare a mano prima di una PR. La
+# differenza e' che qui non si possono dimenticare.
+#
+# I due job girano in parallelo, su due macchine virtuali distinte: un errore
+# nel frontend non nasconde quello nel backend, e viceversa.
+
+name: CI
+
+on:
+  # Ogni push, su qualunque branch: il riscontro arriva prima ancora di aprire
+  # una pull request.
+  push:
+  # Le pull request verso develop e main. Qui i controlli non girano sul
+  # branch cosi' com'e', ma sul risultato della sua fusione con la
+  # destinazione: rispondono a «develop restera' verde, dopo il merge?».
+  pull_request:
+    branches: [develop, main]
+
+# Il token che GitHub presta alla pipeline puo' soltanto leggere il codice.
+# Il default e' piu' largo, e una pipeline che non scrive niente non deve
+# poter scrivere niente.
+permissions:
+  contents: read
+
+# Due push ravvicinati sullo stesso branch: il run del primo viene annullato,
+# perche' il secondo contiene gia' tutto quello che c'era nel primo.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Frontend
+    # Versione di Ubuntu fissata: `ubuntu-latest` cambia da sola quando GitHub
+    # decide di passare alla release successiva.
+    runs-on: ubuntu-24.04
+    # Un job bloccato non consuma sei ore di minuti prima di essere ucciso.
+    timeout-minutes: 15
+    # Ogni `run:` parte da frontend/. Non vale per gli `uses:`, ed e' il motivo
+    # per cui i percorsi dentro `with:` qui sotto partono dalla radice.
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      # Scarica il codice del commit da verificare. Le azioni di terzi sono
+      # fissate all'impronta del commit e non all'etichetta, che il suo autore
+      # puo' spostare: il commento accanto dice a quale versione corrisponde.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Stessa versione di Node del Dockerfile del frontend. `cache: npm`
+      # conserva fra un run e l'altro i pacchetti scaricati, e la chiave e' il
+      # lock: finche' non cambia, npm ci non riscarica niente.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22.22.2
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Dipendenze
+        run: npm ci
+
+      # Gli stessi quattro controlli del README, nello stesso ordine: dal piu'
+      # fondamentale al piu' costoso, cosi' il primo che fallisce e' anche
+      # quello che spiega meglio il problema.
+      - name: Tipi
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+  backend:
+    name: Backend
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # La versione di Python la legge da .python-version, cosi' esiste in un
+      # posto solo. `cache: pipenv` conserva l'ambiente virtuale fra un run e
+      # l'altro, con il lock come chiave.
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version-file: backend/.python-version
+          cache: pipenv
+          cache-dependency-path: backend/Pipfile.lock
+
+      # Versione esatta, la stessa usata in locale: uno strumento che si
+      # aggiorna da solo puo' far diventare rossa la pipeline su codice che
+      # nessuno ha toccato.
+      - name: pipenv
+        run: pip install pipenv==2026.5.1
+
+      # `--dev` perche' qui servono pytest, ruff e pyright, al contrario
+      # dell'immagine Docker. `--deploy` fallisce se il lock non e' coerente
+      # con il Pipfile, invece di rigenerarlo.
+      - name: Dipendenze
+        run: pipenv install --dev --deploy
+
+      - name: Lint
+        run: pipenv run ruff
+
+      - name: Tipi
+        run: pipenv run pyright
+
+      - name: Test
+        run: pipenv run test

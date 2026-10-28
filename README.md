@@ -1,5 +1,7 @@
 # chiaro-privacy
 
+[![CI](https://github.com/GianlucaDore/chiaro-privacy/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/GianlucaDore/chiaro-privacy/actions/workflows/ci.yml)
+
 Applicazione full-stack che legge una privacy policy o dei termini di servizio e spiega in
 chiaro cosa si sta accettando: dati raccolti, finalità, base giuridica, conservazione,
 trasferimenti extra-UE, diritti esercitabili, clausole insolite. Ogni rilievo cita il testo
@@ -98,6 +100,7 @@ esce con successo dichiarando di non aver trovato file da eseguire. Il primo tes
 componente è il passo **3.2b**, quando ci sarà una pagina vera da interrogare, e da lì una
 suite vuota tornerà a essere un errore. Le regole di `ruff` e le impostazioni di `pyright` sono dichiarate in
 `backend/pyproject.toml`: prima erano quelle predefinite dello strumento, quindi dipendevano
-dalla versione installata. La verifica automatica in pipeline arriva al passo
-**0.12**: fino a quel momento **nessuno di questi comandi blocca niente**, e lanciarli è una
-scelta di chi scrive.
+dalla versione installata. Gli stessi controlli girano in pipeline a ogni push e a ogni pull request, e il badge in
+cima mostra l'esito sull'ultimo commit di `develop`. **La pipeline segnala ma non blocca
+ancora**: un merge con i controlli rossi resta possibile finché il branch non dichiara i
+controlli come obbligatori.
