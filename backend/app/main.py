@@ -4,12 +4,12 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 
 from app.api.router import api_router
 from app.core.config import Env, get_backend_root, settings
+from app.core.cors import aggiungi_cors, leggi_origini
 
 # --- Documentazione interattiva --------------------------------------------
 # In produzione non viene esposta affatto: una mappa navigabile dell'API e'
@@ -126,30 +126,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 
 # --- Origini CORS ------------------------------------------------------------
-# ─── PASSO 1.2 · 🔴 · briefing docs/passi/1.2.md ─────────────────────────────
-# TODO(1.2/5) — l'app usa la politica di app/core/cors.py
-#   Da scrivere:
-#     - ORIGINI_CORS si ottiene chiamando leggi_origini() sul valore dei
-#       settings, al posto della list comprehension qui sotto;
-#     - dentro l'if, al posto di app.add_middleware(CORSMiddleware, ...),
-#       chiama aggiungi_cors() con l'app e le origini;
-#     - togli l'import di CORSMiddleware in cima al file, che resta
-#       inutilizzato (ruff F401), e aggiungi quello delle due funzioni.
-#   Perché: il blocco qui sotto viene da un template, e "*" in metodi e
-#     header vuol dire «tutto ciò che mi chiedono» (briefing 3).
-#   Trappola: l'ORDINE resta quello di oggi. aggiungi_cors() va chiamata DOPO
-#     app.add_middleware(SecurityHeadersMiddleware): registrato per ultimo, il
-#     CORS è il più esterno, e il commento qui sotto spiega perché conta.
-#   Trappola: i commenti di questo blocco parlano ancora della list
-#     comprehension: aggiornali con parole tue quando la togli.
-# Cancella questo cartello quando l'hai fatto.
-# ─────────────────────────────────────────────────────────────────────────────
-# BACKEND_CORS_ORIGIN e' un valore singolo o un elenco separato da virgole.
-# Se e' vuoto non si registra alcun CORSMiddleware: [""] sarebbe una lista che
-# non ammette niente ma che ha tutta l'aria di essere configurata.
-ORIGINI_CORS = [
-    origine.strip() for origine in str(settings.BACKEND_CORS_ORIGIN).split(",") if origine.strip()
-]
+# La politica CORS sta in app/core/cors.py. leggi_origini() trasforma
+# BACKEND_CORS_ORIGIN in un elenco; le origini sbagliate le ha già rifiutate
+# il validatore dei settings, all'avvio. Con l'elenco vuoto non si registra
+# alcun CORSMiddleware, e il browser applica la same-origin policy pura.
+ORIGINI_CORS = leggi_origini(settings.BACKEND_CORS_ORIGIN)
 
 app.add_middleware(SecurityHeadersMiddleware)
 
@@ -158,14 +139,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 # sulle risposte di errore generate piu' internamente - altrimenti il browser
 # nasconde al frontend il corpo di ogni 500.
 if ORIGINI_CORS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=ORIGINI_CORS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-
+    aggiungi_cors(app, ORIGINI_CORS)
 
 logging.basicConfig(
     format="%(levelname)-9s %(asctime)s - %(name)s - %(message)s",

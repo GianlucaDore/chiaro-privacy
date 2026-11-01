@@ -1,8 +1,10 @@
 from enum import Enum
 from pathlib import Path
 
-from pydantic import AnyHttpUrl, Field, ValidationError
+from pydantic import ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.core.cors import leggi_origini
 
 # Il file che marca la radice del backend. Il Pipfile definisce le dipendenze
 # del progetto Python, quindi per costruzione non può stare altrove.
@@ -63,37 +65,16 @@ class Settings(BaseSettings):
 
     API_PREFIX: str = "/api"
 
-    # ─── PASSO 1.2 · 🔴 · briefing docs/passi/1.2.md ───────────────────────
-    # Qui ci sono i cartelli 2 e 3. Cancellali quando li hai fatti, insieme a
-    # questa riga.
-    #
-    # TODO(1.2/2) — un tipo che dica la verità
-    #   Da scrivere: il campo diventa una stringa semplice, con la stringa
-    #     vuota come default. Via `AnyHttpUrl` e via `Field(...)`: cancella
-    #     anche i due import in cima al file, se nessun altro li usa (ruff F401).
-    #   Perché: `str | AnyHttpUrl` non valida niente. Una union prova i tipi
-    #     in ordine, e qualunque testo è già una `str`: "ciao", "*" e
-    #     "http://localhost:5173/" passano tutti. L'alias, poi, è identico al
-    #     nome del campo, quindi non cambia nulla. Il controllo vero lo fa
-    #     TODO(1.2/3).
-    BACKEND_CORS_ORIGIN: str | AnyHttpUrl = Field(default="", alias="BACKEND_CORS_ORIGIN")
+    BACKEND_CORS_ORIGIN: str = ""
 
-    # TODO(1.2/3) — l'origine sbagliata ferma l'avvio
-    #   Sintassi: un metodo della classe, decorato così (briefing 4.2):
-    #       @field_validator("NOME_DEL_CAMPO")
-    #       @classmethod
-    #       def nome(cls, valore: str) -> str:
-    #     field_validator si importa da pydantic.
-    #   Da scrivere: il validatore di BACKEND_CORS_ORIGIN. Chiama
-    #     leggi_origini() (da app.core.cors) sul valore, solo per controllarlo,
-    #     e restituisce il valore ricevuto.
-    #   Perché: un ValueError sollevato dentro un validatore diventa un
-    #     ValidationError, e il ValidationError arriva a carica_settings():
-    #     un'origine scritta male ferma l'app all'avvio, con il tuo messaggio
-    #     del passo 1.1, invece di far fallire in silenzio ogni chiamata.
-    #   Trappola: il validatore NON deve restituire la lista: il campo è una
-    #     stringa, e la stringa resta. La lista la ricava main.py, chiamando
-    #     di nuovo leggi_origini() (TODO(1.2/5)).
+    @field_validator("BACKEND_CORS_ORIGIN")
+    @classmethod
+    def validator_backend_cors_origin(cls, valore: str) -> str:
+        # leggi_origini() serve solo a controllare: un'origine sbagliata solleva
+        # ValueError, e pydantic lo trasforma in ValidationError. Il campo resta
+        # il testo scritto nel .env; l'elenco pulito lo ricava main.py.
+        leggi_origini(valore)
+        return valore
 
 
 def carica_settings(env_file: Path | None = DOTENV) -> Settings:
