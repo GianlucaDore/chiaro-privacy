@@ -53,6 +53,43 @@ cui dipende il fatto che `same-origin` non ostacoli il frontend.
 **Le cinque domande di verifica del passo sono rimaste senza risposta** e restano aperte in
 [`docs/passi/0.5.md`](docs/passi/0.5.md).
 
+### 1.2 · La regex delle origini · 30 ottobre 2026
+
+**Cosa ho scritto io.** In [`backend/app/core/cors.py`](backend/app/core/cors.py), su due
+richieste esplicite dell'autore:
+
+- la costante `SCHEMA_ORIGINE`, cioè la regex che descrive un'origine valida. L'autore ha
+  scelto la regex al posto di `urlsplit`;
+- la seconda metà di `leggi_origini()`: il rifiuto di `*` con un messaggio suo, il controllo
+  con `fullmatch` e il `ValueError` che nomina l'origine e mostra la forma giusta.
+
+- il corpo di `aggiungi_cors()`, cioè la chiamata a `app.add_middleware(CORSMiddleware, ...)`
+  con un commento per opzione.
+
+Il ciclo che divide, ripulisce e scarta le voci vuote l'ha scritto l'autore, e così il
+validatore dei settings (mosse 2 e 3). Le tre decisioni di `aggiungi_cors()` le ha prese
+l'autore, rispondendo a tre domande: credenziali `True`, perché il login è un cookie; tutti i
+metodi previsti dal piano (`GET`, `POST`, `PATCH`, `DELETE`); `Content-Type` come unico header,
+distinto da `Accept`. Io le ho solo trascritte.
+
+**La decisione presa al posto suo.** Le maiuscole si **rifiutano** invece di correggerle,
+cioè la strada A del briefing. Così l'elenco usato dal middleware è esattamente quello
+scritto nel `.env`, e chi lo scrive vede subito la forma giusta. La strada B, portarle in
+minuscolo, sarebbe stata più indulgente, ma avrebbe fatto divergere il `.env` dall'elenco
+effettivo.
+
+**Cosa resta da capire.**
+
+- Leggere la regex senza il commento accanto: `?` dopo un carattere e dopo un gruppo, le
+  classi fra parentesi quadre, `\d{1,5}`.
+- Perché `fullmatch` e non `match` o `search`. `match` accetterebbe
+  `http://localhost:5173/` (combacia l'inizio), `search` anche `xx http://a.example`.
+- Perché la si compila a livello di modulo e non dentro il ciclo.
+- I limiti di una regex rispetto a un parser come `urlsplit`: un solo messaggio per tutti i
+  casi, e gli indirizzi IPv6 esclusi.
+
+📄 [Python — `re`, Regular expression operations](https://docs.python.org/3/library/re.html) · [regex101](https://regex101.com), con il dialetto Python
+
 > **Nota.** Il passo **0.3** è stato implementato da Claude su autorizzazione esplicita
 > dell'autore, che ha però chiesto di **non** annotarlo qui. La deroga è comunque dichiarata
 > in testa a [`docs/passi/0.3.md`](docs/passi/0.3.md), dove restano anche le cinque domande
