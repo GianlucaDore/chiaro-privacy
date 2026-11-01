@@ -1,8 +1,10 @@
 from enum import Enum
 from pathlib import Path
 
-from pydantic import AnyHttpUrl, Field, ValidationError
+from pydantic import ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.core.cors import leggi_origini
 
 # Il file che marca la radice del backend. Il Pipfile definisce le dipendenze
 # del progetto Python, quindi per costruzione non può stare altrove.
@@ -63,8 +65,16 @@ class Settings(BaseSettings):
 
     API_PREFIX: str = "/api"
 
-    # ❗ Il passo 1.2 è dedicato al CORS: questo campo, in questo passo, non si tocca.
-    BACKEND_CORS_ORIGIN: str | AnyHttpUrl = Field(default="", alias="BACKEND_CORS_ORIGIN")
+    BACKEND_CORS_ORIGIN: str = ""
+
+    @field_validator("BACKEND_CORS_ORIGIN")
+    @classmethod
+    def validator_backend_cors_origin(cls, valore: str) -> str:
+        # leggi_origini() serve solo a controllare: un'origine sbagliata solleva
+        # ValueError, e pydantic lo trasforma in ValidationError. Il campo resta
+        # il testo scritto nel .env; l'elenco pulito lo ricava main.py.
+        leggi_origini(valore)
+        return valore
 
 
 def carica_settings(env_file: Path | None = DOTENV) -> Settings:

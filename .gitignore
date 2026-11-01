@@ -9,6 +9,11 @@
 .env.*
 !.env.example
 
+# --- Note di lavoro personali ----------------------------------------------
+# I rimandi ai passi futuri, raccolti durante le sessioni: servono al percorso
+# di studio, non al progetto.
+FUTURE-REFERENCES.md
+
 # --- Python / backend ------------------------------------------------------
 __pycache__/
 *.py[cod]
