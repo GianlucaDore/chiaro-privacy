@@ -105,6 +105,60 @@ bloccanti per la chiusura di un passo: sono qui perché vengano rilette.
 Ogni voce riporta la domanda, la risposta data e la correzione. Le correzioni sono brevi per
 scelta: dove il concetto richiede più spazio c'è il link a una risorsa che lo spiega.
 
+### 1.3 · Domanda 2 — Il modello che nessuno importa · ⭐⭐☆☆☆
+
+**Domanda.** Hai scritto il modello `User`, ma nessuno importa `app/models/user.py`. L'app
+parte? Cosa succede alla prima query, e perché nessuno ti avvisa prima?
+
+**Risposta data.** L'app parte e la prima query dà errore. Poi la soluzione: `from app import
+models` nel main «di modo che venga eseguita la creazione della tabella», e `__all__` che
+rende i modelli disponibili.
+
+**Correzione.** Manca il perché del silenzio. La classe si iscrive in `Base.metadata` solo
+quando Python la esegue, cioè quando il suo file viene importato. Senza import `create_all`
+trova un registro **vuoto**, non crea niente e non lo considera un errore; la prima query
+fallisce con `no such table: users`. Due confusioni da sciogliere: importare **registra**, è
+`create_all` che **crea**; e a registrare è la riga di import in `__init__.py`, non `__all__`,
+che dichiara solo i nomi riesportati.
+
+📄 [SQLAlchemy — Working with Database Metadata](https://docs.sqlalchemy.org/en/21/tutorial/metadata.html)
+
+### 1.3 · Domanda 3 — Perché non si restituisce il modello · ⭐☆☆☆☆
+
+**Domanda.** Perché l'API non deve mai restituire direttamente il modello `User`, ma uno
+schema Pydantic separato? Fai un esempio concreto di cosa andrebbe storto.
+
+**Risposta data.** Non scritta nel file. In conversazione: lo schema serve a evitare un errore
+di tipi, segnalato da `pyright` e da Pydantic mentre si scrive, perché FastAPI pretende schemi
+Pydantic.
+
+**Correzione.** L'errore esiste ma lo dà **FastAPI all'avvio**, solo se il modello è il tipo di
+ritorno, e si aggira togliendo l'annotazione. Il motivo vero è ciò che succede quando funziona:
+la rotta spedisce **ogni colonna** del modello, anche quelle interne o aggiunte dopo. Misurato,
+con una colonna `password_hash`:
+`200 {"password_hash":"$argon2id$...","id":1,"email":"ada@example.com"}`. Lo schema non copia
+il modello: elenca i soli campi che possono uscire, ed è il contratto da cui nascono i tipi del
+frontend.
+
+📄 [FastAPI — Response Model](https://fastapi.tiangolo.com/tutorial/response-model/) · [OWASP API3:2023 — Broken Object Property Level Authorization](https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/)
+
+### 1.3 · Domanda 4 — L'unicità nel database · ⭐⭐☆☆☆
+
+**Domanda.** Perché l'unicità dell'email va messa nel database con `unique=True`, invece di
+controllare nel codice «esiste già?» prima di inserire?
+
+**Risposta data.** Perché un errore nell'implementazione del controllo farebbe inserire a
+SQLAlchemy righe con email duplicate.
+
+**Correzione.** Manca il motivo principale: **anche un controllo perfetto non basta**. Due
+registrazioni contemporanee con la stessa email passano entrambe il «non esiste» e inseriscono
+entrambe, perché fra la lettura e la scrittura c'è un istante scoperto. Il database controlla il
+vincolo nello stesso momento in cui scrive, e rifiuta la seconda con `IntegrityError`. In più il
+vincolo vale anche per chi scrive senza passare dall'app. Ad accettare o rifiutare la riga è il
+database, non SQLAlchemy.
+
+📄 [Time-of-check to time-of-use](https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use) · [SQLAlchemy — Unique Constraint](https://docs.sqlalchemy.org/en/21/core/constraints.html#unique-constraint)
+
 ### 0.6 · Domanda 4 — Chi emette l'errore sui tipi di React · ⭐⭐☆☆☆
 
 **Domanda.** `react` e `@types/react` sono due pacchetti distinti. Se aggiorni solo il primo,
