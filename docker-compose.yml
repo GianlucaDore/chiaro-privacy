@@ -55,9 +55,11 @@ services:
       # innestata dentro. Serve perche' il filesystem di un container e'
       # usa e getta: `docker compose up --build` sostituisce il container con
       # uno nuovo, e tutto cio' che il vecchio aveva scritto sparisce.
-      # Qui dentro finiranno i documenti caricati dagli utenti, e piu' avanti
-      # il file SQLite.
+      # Due volumi separati: in uploads i documenti caricati dagli utenti, in
+      # data il file SQLite. Cosi' si salvano e si cancellano ciascuno per conto
+      # proprio.
       - uploads:/app/uploads
+      - data:/app/data
     healthcheck:
       # Il controllo usa python invece di curl perche' python c'e' di sicuro
       # nell'immagine, mentre curl in un'immagine -slim non e' installato.
@@ -105,3 +107,4 @@ services:
 
 volumes:
   uploads:
+  data:
