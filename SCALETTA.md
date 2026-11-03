@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 21 / 71** — ultimo completato: **1.2** · corrente: **1.3**
+**Avanzamento: 22 / 71** — ultimo completato: **1.3** · corrente: **1.4**
 
 ---
 
@@ -59,7 +59,7 @@ qualcosa va storto.*
 
 - [x] **1.1** 🟡 Completare i settings: variabili obbligatorie, `.env.example` aggiornato — *l'app fallisce al boot con errore chiaro se manca una variabile obbligatoria*
 - [x] **1.2** 🔴 CORS capito, non copiato — *concetti: cosa apre esattamente, perché `allow_credentials: true` cambia le regole e vieta `*`* — *una richiesta con `Origin` non in lista viene rifiutata, verificabile con `curl -H "Origin: ..."`*
-- [ ] **1.3** 🔴 SQLAlchemy 2.0: engine, sessione, modelli dichiarativi, `create_all` — *concetti: differenza tra modello DB e schema API, perché non si espone mai il modello* — *la tabella `users` esiste e un test crea e rilegge una riga*
+- [x] **1.3** 🔴 SQLAlchemy 2.0: engine, sessione, modelli dichiarativi, `create_all` — *concetti: differenza tra modello DB e schema API, perché non si espone mai il modello* — *la tabella `users` esiste e un test crea e rilegge una riga*
 - [ ] **1.4** 🔴 Dependency injection con `Depends`: una sessione per richiesta in `app/api/deps.py` — *concetti: ciclo di vita, perché non una sessione globale, cosa accade se non la chiudi* — *un test dimostra sessioni distinte per richiesta e chiusura garantita*
 - [ ] **1.5** 🟡 Repository astratto più implementazione SQLAlchemy per `User` — *il servizio non importa SQLAlchemy; un test con repository finto in memoria passa*
 - [ ] **1.6** 🔴 Gestione errori: exception handler e forma unica dell'errore — *concetti: perché non si espone mai uno stacktrace* — *un errore di dominio risponde con la forma concordata e nessun dettaglio interno nel body*
