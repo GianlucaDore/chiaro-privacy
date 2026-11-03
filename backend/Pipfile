@@ -12,12 +12,12 @@ fastapi = "~=0.141.0"
 uvicorn = {extras = ["standard"], version = "~=0.52.4"}
 pydantic = "~=2.13"
 pydantic-settings = "==2.15.0"
+sqlalchemy = "==2.1.6"
 
 [dev-packages]
 # --- Strumenti che servono mentre si sviluppa, non all'app in produzione ---
 # Restano fuori dall'immagine Docker finale: l'app in produzione
 # non deve trasportare un motore di test che non eseguirà mai.
-
 pytest = "==9.1.1"
 
 #              httpx Non è nella scaletta, ma il `TestClient` di FastAPI lo usa
