@@ -76,6 +76,11 @@ class Settings(BaseSettings):
         leggi_origini(valore)
         return valore
 
+    # Il db è posizionato nella cartella data/ e associato a un volume Docker separato
+    # (docker-compose) per banale separation of concerns; data/ contiene il db,
+    # uploads/ gli uploads.
+    DATABASE_URL: str = f"sqlite:///{(get_backend_root() / 'data' / 'chiaro.db').as_posix()}"
+
 
 def carica_settings(env_file: Path | None = DOTENV) -> Settings:
     """

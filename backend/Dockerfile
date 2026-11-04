@@ -37,12 +37,13 @@ RUN pipenv install --system --deploy
 # entrato sopra, e deve restare: l'app lo cerca per trovare la propria radice.
 COPY app/ ./app/
 
-# Crea un utente non root e gli da' la proprieta' di /app. uploads/ va creata
-# QUI: il compose ci monta sopra un volume prima che l'app parta, e se la
-# cartella non esiste nell'immagine il volume nasce di root e l'app non ci
-# puo' scrivere.
+# Crea un utente non root e gli da' la proprieta' di /app. uploads/ e data/
+# vanno create QUI: il compose ci monta sopra due volumi prima che l'app parta,
+# e se una cartella non esiste nell'immagine il suo volume nasce di root e
+# l'app non ci puo' scrivere.
 RUN useradd --create-home appuser \
  && mkdir -p /app/uploads \
+ && mkdir -p /app/data \
  && chown -R appuser /app
 
 # Da qui in poi, e mentre il container gira, si e' appuser e non root.

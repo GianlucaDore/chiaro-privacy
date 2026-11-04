@@ -7,9 +7,12 @@ from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
 
+from app import models  # noqa: F401
 from app.api.router import api_router
 from app.core.config import Env, get_backend_root, settings
 from app.core.cors import aggiungi_cors, leggi_origini
+from app.db.base import Base
+from app.db.session import engine
 
 # --- Documentazione interattiva --------------------------------------------
 # In produzione non viene esposta affatto: una mappa navigabile dell'API e'
@@ -64,6 +67,11 @@ CSP_DOCUMENTAZIONE = (
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # avvio
     os.makedirs(get_backend_root() / "uploads", exist_ok=True)
+    #   La cartella del database va creata PRIMA di create_all: SQLite crea il
+    #   file, ma non la cartella.
+    os.makedirs(get_backend_root() / "data", exist_ok=True)
+    Base.metadata.create_all(engine)
+
     yield
     # spegnimento - per ora niente
 
