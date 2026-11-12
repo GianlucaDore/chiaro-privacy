@@ -20,7 +20,7 @@ Ogni passo ha un **criterio verificabile eseguendo qualcosa**, non a occhio. I p
 i *concetti da capire prima*; il briefing esteso viene scritto in `docs/passi/<id>.md` quando arrivi
 a quel passo, non prima.
 
-**Avanzamento: 24 / 71** — ultimo completato: **1.5** · corrente: **1.6**
+**Avanzamento: 25 / 71** — ultimo completato: **1.6** · corrente: **1.7**
 
 ---
 
@@ -62,7 +62,7 @@ qualcosa va storto.*
 - [x] **1.3** 🔴 SQLAlchemy 2.0: engine, sessione, modelli dichiarativi, `create_all` — *concetti: differenza tra modello DB e schema API, perché non si espone mai il modello* — *la tabella `users` esiste e un test crea e rilegge una riga*
 - [x] **1.4** 🔴 Dependency injection con `Depends`: una sessione per richiesta in `app/api/deps.py` — *concetti: ciclo di vita, perché non una sessione globale, cosa accade se non la chiudi* — *un test dimostra sessioni distinte per richiesta e chiusura garantita*
 - [x] **1.5** 🟡 Repository astratto più implementazione SQLAlchemy per `User` — *il servizio non importa SQLAlchemy; un test con repository finto in memoria passa*
-- [ ] **1.6** 🔴 Gestione errori: exception handler e forma unica dell'errore — *concetti: perché non si espone mai uno stacktrace* — *un errore di dominio risponde con la forma concordata e nessun dettaglio interno nel body*
+- [x] **1.6** 🔴 Gestione errori: exception handler e forma unica dell'errore — *concetti: perché non si espone mai uno stacktrace* — *un errore di dominio risponde con la forma concordata e nessun dettaglio interno nel body*
 - [ ] **1.7** 🟡 Test con pytest: `TestClient`, fixture, override delle dipendenze, DB di test — *`pytest` verde e i test non toccano il DB di sviluppo*
 - [ ] **1.8** 🟢 `core/logging.py` finalmente popolato, con request id — *ogni risposta ha `X-Request-ID` e la riga di log lo riporta*
 - [ ] **1.9** 🟡 Copertura backend in Sonar: `pytest --cov` → `coverage.xml` → scanner — *concetti: Sonar non calcola la copertura, la legge da un report che generi tu* — *la percentuale appare in dashboard e la condizione sul nuovo codice è attiva nella gate*
