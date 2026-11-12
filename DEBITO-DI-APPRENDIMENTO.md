@@ -90,6 +90,40 @@ effettivo.
 
 📄 [Python — `re`, Regular expression operations](https://docs.python.org/3/library/re.html) · [regex101](https://regex101.com), con il dialetto Python
 
+### 1.5 · Il repository di `User` · 12 novembre 2026
+
+**Cosa ho scritto io.** L'autore ha chiesto di chiudere il passo da solo, per andare avanti.
+
+- In [`backend/app/repositories/user_sqlalchemy.py`](backend/app/repositories/user_sqlalchemy.py),
+  tutto:
+  - la traduzione `_a_dominio`, riscritta: la bozza costruiva l'`Utente` vuoto per poi
+    assegnargli i campi, non rimetteva il fuso orario e importava `Session` da pytest;
+  - `aggiungi`, con `add` e `flush` ma senza `commit`;
+  - `cerca_per_email`, con `select()`.
+- La chiusura: il tipo di ritorno di `crea_utente`, i cartelli e le intestazioni.
+
+L'autore ha scritto `Utente`, la struttura di `UserRepository` e `UserService`.
+
+**Cosa resta da capire.** Il quadro d'insieme, cioè chi fa cosa fra `models/`,
+`repositories/` e `services/`: è la sezione 0 del
+[briefing](docs/passi/1.5.md). E le quattro domande di verifica, rimaste senza risposta:
+
+1. *I test del servizio passano senza il repository vero: cosa dimostra?* Che il servizio
+   dipende solo dal contratto, e funziona con qualunque implementazione, anche un dizionario.
+   Quale riceve lo decide chi lo costruisce: il test, e nell'app la dipendenza del passo 2.2.
+2. *Perché `Utente` e non `User`?* Per gli import: il modello carica SQLAlchemy, e il servizio
+   non deve. Per le modifiche: `User` è osservato dalla sessione, e cambiarlo cambia il
+   database al primo `commit`. Misurato: `u.email = u.email.upper()` → `ADA@EXAMPLE.COM`.
+3. *`flush` contro `commit`?* `flush` scrive nella transazione aperta e la riga riceve l'`id`,
+   ma un `rollback` lo annulla; `commit` conferma. Il repository fa `flush` per avere l'`id`;
+   il `commit` spetta a chi conosce il lavoro intero.
+4. *Perché il fuso orario si corregge nel repository?* Perché è una stranezza del database, e
+   deve restare dove sta il database: ogni servizio riceve date già giuste. Senza correzione,
+   il confronto con `datetime.now(UTC)` solleva `TypeError: can't compare offset-naive and
+   offset-aware datetimes`, e la richiesta risponde 500.
+
+📄 [Cosmic Python — Repository Pattern](https://www.cosmicpython.com/book/chapter_02_repository.html) · [SQLAlchemy — Flushing](https://docs.sqlalchemy.org/en/21/orm/session_basics.html#flushing) · [Python — Aware and naive objects](https://docs.python.org/3/library/datetime.html#aware-and-naive-objects)
+
 > **Nota.** Il passo **0.3** è stato implementato da Claude su autorizzazione esplicita
 > dell'autore, che ha però chiesto di **non** annotarlo qui. La deroga è comunque dichiarata
 > in testa a [`docs/passi/0.3.md`](docs/passi/0.3.md), dove restano anche le cinque domande
@@ -104,6 +138,25 @@ bloccanti per la chiusura di un passo: sono qui perché vengano rilette.
 
 Ogni voce riporta la domanda, la risposta data e la correzione. Le correzioni sono brevi per
 scelta: dove il concetto richiede più spazio c'è il link a una risorsa che lo spiega.
+
+### 1.4 · Domanda 4 — Le sessioni mai chiuse · ⭐☆☆☆☆
+
+**Domanda.** Un'applicazione dimentica di chiudere le sessioni. In sviluppo nessuno se ne
+accorge; in produzione, dopo un'ora di traffico, ogni richiesta che tocca il database resta
+appesa trenta secondi e poi risponde 500. Spiega il perché di tutti e due i comportamenti.
+
+**Risposta data.** Interrotta: «In produzione, spesso il DB è configurato per chiudere una
+transazione o una connessione».
+
+**Correzione.** I trenta secondi non vengono dal database ma dal **pool**. Ogni sessione non
+chiusa tiene in prestito la sua connessione, e il pool ne ha 15: 5 più 10 di scorta. In sviluppo
+le richieste sono poche, e il garbage collector libera le sessioni abbandonate, restituendo le
+connessioni, prima che finiscano. In produzione si accumulano più in fretta di quanto vengano
+raccolte: quando sono tutte in prestito, ogni richiesta nuova aspetta `pool_timeout`, 30 secondi
+di default, poi riceve `TimeoutError`, e FastAPI risponde 500. Misurato con un pool da una
+connessione: `QueuePool limit of size 1 overflow 0 reached, connection timed out`.
+
+📄 [SQLAlchemy — Connection Pooling](https://docs.sqlalchemy.org/en/21/core/pooling.html) · [SQLAlchemy — QueuePool limit reached](https://docs.sqlalchemy.org/en/21/errors.html#error-3o7r)
 
 ### 1.3 · Domanda 2 — Il modello che nessuno importa · ⭐⭐☆☆☆
 
