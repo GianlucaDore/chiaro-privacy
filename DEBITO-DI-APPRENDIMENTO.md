@@ -139,6 +139,39 @@ bloccanti per la chiusura di un passo: sono qui perché vengano rilette.
 Ogni voce riporta la domanda, la risposta data e la correzione. Le correzioni sono brevi per
 scelta: dove il concetto richiede più spazio c'è il link a una risorsa che lo spiega.
 
+### 1.6 · Domanda 2 — Mai `str(exc)` nel body · ⭐⭐☆☆☆
+
+**Domanda.** Perché nel body di un 500 non va mai `str(exc)`? Che cosa conteneva, nel caso
+misurato, e a chi potrebbe servire?
+
+**Risposta data.** Esporrebbe lo stack trace e i dettagli dell'architettura; `str(exc)` serve
+alle funzioni di logging, non alle API.
+
+**Correzione.** `str(exc)` non è lo stacktrace: è il solo messaggio, e basta quello. Misurato, il
+messaggio di un `IntegrityError` contiene la query SQL, la tabella e la colonna (`users.email`), e
+fra i parametri **l'email dell'utente**: un dato personale consegnato a chi ha provocato
+l'errore. A chi attacca serve per ricavare la struttura del database e capire quali input mandano
+il sistema in errore. Lo stacktrace, l'elenco delle chiamate, va solo nel log.
+
+📄 [CWE-209 — Generation of Error Message Containing Sensitive Information](https://cwe.mitre.org/data/definitions/209.html) · [OWASP — Error Handling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html)
+
+### 1.6 · Domanda 4 — Perché `errori.py` non importa FastAPI · ⭐⭐☆☆☆
+
+**Domanda.** Perché `ErroreDiDominio` sta in `app/core` e non importa FastAPI, mentre i gestori
+stanno in `app/api`?
+
+**Risposta data.** Separation of concerns: la classe è slegata dalle rotte, che non hanno bisogno
+di `except` perché gli errori li cattura il middleware.
+
+**Correzione.** Il motivo è **chi solleva** gli errori di dominio: servizi e repository, che non
+devono sapere niente di FastAPI, come all'1.5 il servizio non doveva sapere niente di
+SQLAlchemy. Se `errori.py` importasse FastAPI, ogni servizio si porterebbe dietro il framework
+web. I gestori traducono in HTTP, e quindi stanno nello strato HTTP. E gli errori di dominio non
+li cattura il middleware che abbiamo scritto, ma il gestore registrato con `exception_handler`:
+sono due pezzi distinti.
+
+📄 [Cosmic Python — Introduction: layered architecture](https://www.cosmicpython.com/book/introduction.html) · [FastAPI — Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/)
+
 ### 1.4 · Domanda 4 — Le sessioni mai chiuse · ⭐☆☆☆☆
 
 **Domanda.** Un'applicazione dimentica di chiudere le sessioni. In sviluppo nessuno se ne

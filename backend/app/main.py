@@ -8,6 +8,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.responses import Response
 
 from app import models  # noqa: F401
+from app.api.gestione_errori import registra_gestione_errori
 from app.api.router import api_router
 from app.core.config import Env, get_backend_root, settings
 from app.core.cors import aggiungi_cors, leggi_origini
@@ -139,6 +140,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 # il validatore dei settings, all'avvio. Con l'elenco vuoto non si registra
 # alcun CORSMiddleware, e il browser applica la same-origin policy pura.
 ORIGINI_CORS = leggi_origini(settings.BACKEND_CORS_ORIGIN)
+
+# Prima di add_middleware, non dopo: Starlette mette ogni middleware nuovo
+# all'esterno dei precedenti. Così l'intercettatore degli errori inattesi sta
+# dentro SecurityHeadersMiddleware e CORS, e anche il suo 500 riceve gli header.
+registra_gestione_errori(app=app)
 
 app.add_middleware(SecurityHeadersMiddleware)
 
