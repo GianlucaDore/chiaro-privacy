@@ -105,6 +105,25 @@ bloccanti per la chiusura di un passo: sono qui perché vengano rilette.
 Ogni voce riporta la domanda, la risposta data e la correzione. Le correzioni sono brevi per
 scelta: dove il concetto richiede più spazio c'è il link a una risorsa che lo spiega.
 
+### 1.4 · Domanda 4 — Le sessioni mai chiuse · ⭐☆☆☆☆
+
+**Domanda.** Un'applicazione dimentica di chiudere le sessioni. In sviluppo nessuno se ne
+accorge; in produzione, dopo un'ora di traffico, ogni richiesta che tocca il database resta
+appesa trenta secondi e poi risponde 500. Spiega il perché di tutti e due i comportamenti.
+
+**Risposta data.** Interrotta: «In produzione, spesso il DB è configurato per chiudere una
+transazione o una connessione».
+
+**Correzione.** I trenta secondi non vengono dal database ma dal **pool**. Ogni sessione non
+chiusa tiene in prestito la sua connessione, e il pool ne ha 15: 5 più 10 di scorta. In sviluppo
+le richieste sono poche, e il garbage collector libera le sessioni abbandonate, restituendo le
+connessioni, prima che finiscano. In produzione si accumulano più in fretta di quanto vengano
+raccolte: quando sono tutte in prestito, ogni richiesta nuova aspetta `pool_timeout`, 30 secondi
+di default, poi riceve `TimeoutError`, e FastAPI risponde 500. Misurato con un pool da una
+connessione: `QueuePool limit of size 1 overflow 0 reached, connection timed out`.
+
+📄 [SQLAlchemy — Connection Pooling](https://docs.sqlalchemy.org/en/21/core/pooling.html) · [SQLAlchemy — QueuePool limit reached](https://docs.sqlalchemy.org/en/21/errors.html#error-3o7r)
+
 ### 1.3 · Domanda 2 — Il modello che nessuno importa · ⭐⭐☆☆☆
 
 **Domanda.** Hai scritto il modello `User`, ma nessuno importa `app/models/user.py`. L'app
