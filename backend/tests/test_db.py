@@ -1,9 +1,9 @@
 """
 Test del passo 1.3: il database, il modello User e create_all.
 
-Ogni test costruisce il proprio motore su un file SQLite in una cartella
-temporanea di pytest (`tmp_path`): non tocca mai il database di sviluppo, ed è
-un primo assaggio di quello che il passo 1.7 farà per tutta la suite.
+Ogni test riceve dalla fixture `engine`, in `tests/conftest.py`, un motore su un
+file SQLite nuovo in una cartella temporanea di pytest (`tmp_path`): non tocca
+mai il database di sviluppo.
 
 Gli import di `app.models` e `app.db.base` stanno dentro le funzioni: finché il
 modello non esiste, falliscono i test che lo usano, ma il file si raccoglie
@@ -13,24 +13,12 @@ comunque e gli altri girano.
 from pathlib import Path
 
 import pytest
-from sqlalchemy import Engine, create_engine, inspect, select
+from sqlalchemy import Engine, inspect, select
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings, get_backend_root
-
-
-@pytest.fixture
-def engine(tmp_path: Path) -> Engine:
-    """Un motore su un file nuovo, con le tabelle create da zero."""
-    from app import models  # noqa: F401  (registra i modelli in Base.metadata)
-    from app.db.base import Base
-
-    motore = create_engine(f"sqlite:///{(tmp_path / 'test.db').as_posix()}")
-    Base.metadata.create_all(motore)
-    return motore
-
 
 # --- La configurazione -------------------------------------------------------
 
@@ -41,7 +29,7 @@ def test_database_url_e_un_percorso_assoluto(monkeypatch: pytest.MonkeyPatch) ->
     uvicorn: è il bug del passo 0.3, in un'altra forma.
     """
     monkeypatch.delenv("DATABASE_URL", raising=False)
-    url = make_url(Settings(_env_file=None).DATABASE_URL)
+    url = make_url(Settings(_env_file=None).DATABASE_URL)  # pyright: ignore[reportCallIssue]
 
     assert url.drivername == "sqlite"
     assert url.database, "il database non può essere in memoria: sparirebbe a ogni riavvio"
