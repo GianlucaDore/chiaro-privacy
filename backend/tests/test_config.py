@@ -44,7 +44,7 @@ def test_variabile_scritta_nel_dotenv_arriva_nei_settings(tmp_path: Path) -> Non
     env = tmp_path / ".env"
     env.write_text("PROJECT_NAME=Chiaro\n", encoding="utf-8")
 
-    settings = Settings(_env_file=env)
+    settings = Settings(_env_file=env)  # pyright: ignore[reportCallIssue]
 
     assert settings.PROJECT_NAME == "Chiaro"
 
@@ -109,7 +109,7 @@ def test_env_e_obbligatoria(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("ENV", raising=False)
 
     with pytest.raises(ValidationError, match="ENV"):
-        Settings(_env_file=None)
+        Settings(_env_file=None)  # pyright: ignore[reportCallIssue]
 
 
 def test_l_errore_non_riporta_i_valori_letti(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -124,7 +124,7 @@ def test_l_errore_non_riporta_i_valori_letti(monkeypatch: pytest.MonkeyPatch) ->
     monkeypatch.setenv("PROJECT_NAME", SEGRETO)
 
     with pytest.raises(ValidationError) as info:
-        Settings(_env_file=None)
+        Settings(_env_file=None)  # pyright: ignore[reportCallIssue]
 
     assert SEGRETO not in str(info.value)
 
@@ -180,7 +180,7 @@ def test_l_esempio_basta_a_far_partire_l_app(monkeypatch: pytest.MonkeyPatch) ->
     mancanti = [nome for nome in obbligatorie if nome not in documentate]
     assert not mancanti, f"obbligatorie ma assenti da .env.example: {mancanti}"
 
-    Settings(_env_file=ESEMPIO)
+    Settings(_env_file=ESEMPIO)  # pyright: ignore[reportCallIssue]
 
 
 def test_l_esempio_non_contiene_variabili_sconosciute() -> None:

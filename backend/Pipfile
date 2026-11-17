@@ -45,7 +45,11 @@ ruff = "ruff check"
 # `ruff format` impagina; `ruff check` segnala. Sono due lavori distinti
 #           dello stesso programma, e vanno lanciati entrambi.
 format = "ruff format"
-pyright = "pyright app/"
+# `pyright` senza argomenti controlla ciò che elenca `include` nel pyproject.toml: app,
+#             tests e conftest.py. Anche i test vanno controllati, perché pytest i tipi non li
+#             legge: una fixture con `yield` annotata `-> Engine` fa passare tutti i test, e
+#             solo pyright si accorge che il tipo è sbagliato. La CI lancia questo stesso script.
+pyright = "pyright"
 
 [requires]
 python_version = "3.12"

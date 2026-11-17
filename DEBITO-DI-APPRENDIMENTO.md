@@ -139,6 +139,41 @@ bloccanti per la chiusura di un passo: sono qui perché vengano rilette.
 Ogni voce riporta la domanda, la risposta data e la correzione. Le correzioni sono brevi per
 scelta: dove il concetto richiede più spazio c'è il link a una risorsa che lo spiega.
 
+### 1.7 · Domanda 1 — Perché `DATABASE_URL` sta in `conftest.py` · ⭐⭐☆☆☆
+
+**Domanda.** Perché `DATABASE_URL` va impostata in `conftest.py`, fuori da ogni funzione, e non
+dentro una fixture? Che cosa succede, e in quale momento, se la sposti in una fixture?
+
+**Risposta data.** Il `conftest.py` più esterno è il primo file eseguito; `DATABASE_URL` la
+assegna `main.py`, e quando il lifespan dei test prepara il `TestClient` importa l'app, che ha
+già l'indirizzo di sviluppo.
+
+**Correzione.** Non è la variabile a essere «già assegnata»: è il **motore** a essere già nato.
+Lo crea `app/db/session.py` con una riga fuori da ogni funzione, che gira una volta sola, al
+primo import del file, e legge `DATABASE_URL` in quel momento. Il primo import non avviene nel
+lifespan ma durante la **raccolta**: pytest carica `tests/conftest.py`, che importa `app.main`,
+che importa a catena `app.db.session`. Una fixture gira solo quando parte un test, cioè dopo: il
+motore ha già l'indirizzo di sviluppo, e il lifespan ci crea le tabelle.
+
+📄 [Python — More on Modules](https://docs.python.org/3/tutorial/modules.html#more-on-modules) · [pytest — Plugin discovery order at tool startup](https://docs.pytest.org/en/stable/how-to/writing_plugins.html#plugin-discovery-order-at-tool-startup)
+
+### 1.7 · Domanda 4 — La scope della fixture `engine` · nessuna risposta
+
+**Domanda.** La fixture `engine` ha la scope di default, `function`. Che cosa cambierebbe con
+`session`, quale test se ne accorgerebbe, e perché?
+
+**Risposta data.** Nessuna.
+
+**Correzione.** Con `session` pytest crea la fixture una volta sola e la dà a tutti i test: un
+solo database per la suite, e ciò che scrive un test lo trova il successivo. Così com'è, però,
+pytest la rifiuta subito con `ScopeMismatch`: `engine` chiede `tmp_path`, che vive un test solo,
+e una fixture che dura di più non può dipendere da una che dura di meno. Con `tmp_path_factory`
+la suite parte e falliscono 4 test, perché quasi tutti inseriscono `ada@example.com` e la colonna
+è unica. Quello scritto per accorgersene è `test_ogni_test_parte_da_un_db_vuoto`, che al secondo
+giro trova la tabella piena.
+
+📄 [pytest — Fixture scopes](https://docs.pytest.org/en/stable/how-to/fixtures.html#scope-sharing-fixtures-across-classes-modules-packages-or-session) · [pytest — The tmp_path_factory fixture](https://docs.pytest.org/en/stable/how-to/tmp_path.html#the-tmp-path-factory-fixture)
+
 ### 1.6 · Domanda 2 — Mai `str(exc)` nel body · ⭐⭐☆☆☆
 
 **Domanda.** Perché nel body di un 500 non va mai `str(exc)`? Che cosa conteneva, nel caso
