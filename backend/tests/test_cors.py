@@ -82,14 +82,14 @@ def test_i_settings_rifiutano_un_origine_sbagliata(monkeypatch: pytest.MonkeyPat
     monkeypatch.setenv("BACKEND_CORS_ORIGIN", "*")
 
     with pytest.raises(ValidationError, match="BACKEND_CORS_ORIGIN"):
-        Settings(_env_file=None)
+        Settings(_env_file=None)  # pyright: ignore[reportCallIssue]
 
 
 def test_i_settings_accettano_un_origine_valida(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ENV", "TEST")
     monkeypatch.setenv("BACKEND_CORS_ORIGIN", FRONTEND)
 
-    assert Settings(_env_file=None).BACKEND_CORS_ORIGIN == FRONTEND
+    assert Settings(_env_file=None).BACKEND_CORS_ORIGIN == FRONTEND  # pyright: ignore[reportCallIssue]
 
 
 # --- aggiungi_cors: il middleware su un'app di prova ------------------------
